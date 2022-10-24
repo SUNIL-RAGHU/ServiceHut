@@ -168,6 +168,9 @@ class _TaskpostState extends State<Taskpost> {
                           .toList(),
                       onChanged: (category) {
                         setState(() {
+                          if (category != selectedCategory) {
+                            selectedSubCategory = null;
+                          }
                           selectedCategory = category;
                           subCategoryChosen = adj[selectedCategory]!;
                         });

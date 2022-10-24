@@ -60,7 +60,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     }
   }
 
-  Future selectImage(ImageSource source) async {
+  Future<void> selectImage(ImageSource source) async {
     try {
       final selectedImage = await ImagePicker().pickImage(source: source);
       if (selectedImage != null) {
@@ -430,9 +430,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                   borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(20),
                               )),
-                              builder: (context) => bottomsheet(
-                                  selectImage(ImageSource.camera),
-                                  selectImage(ImageSource.gallery)));
+                              builder: (context) => bottomsheet());
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -454,62 +452,92 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
               SizedBox(
                 height: 20,
               ),
-              axis
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Expanded(
-                        child: Container(
+              // axis
+              //     ? Padding(
+              //         padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              //         child: Expanded(
+              //           child: Container(
+              //             height: 100,
+              //             width: 250,
+              //             decoration: BoxDecoration(
+              //               borderRadius: BorderRadius.circular(12),
+              //             ),
+              //             child: GridView.builder(
+              //               gridDelegate:
+              //                   const SliverGridDelegateWithFixedCrossAxisCount(
+              //                 crossAxisCount: 4,
+              //               ),
+              //               itemCount: _imagelist.length,
+              //               itemBuilder: (context, index) {
+              //                 return Padding(
+              //                   padding: const EdgeInsets.all(2.0),
+              //                   child: Stack(
+              //                     fit: StackFit.expand,
+              //                     children: [
+              //                       Image.file(
+              //                         File(
+              //                           _imagelist[index].path,
+              //                         ),
+              //                         fit: BoxFit.cover,
+              //                       ),
+              //                       Positioned(
+              //                         top: -2,
+              //                         right: -2,
+              //                         child: Container(
+              //                           child: IconButton(
+              //                             onPressed: () {
+              //                               _imagelist.removeAt(index);
+              //                               if (_imagelist.length == 0) {
+              //                                 axis = false;
+              //                               }
+              //                               setState(() {});
+              //                             },
+              //                             icon: Icon(
+              //                               Icons.delete_outline,
+              //                               color: Colors.red,
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       )
+              //                     ],
+              //                   ),
+              //                 );
+              //               },
+              //             ),
+              //           ),
+              //         ),
+              //       )
+              //     : Container(),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _imagelist.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: ListTile(
+                        leading: Image.file(
+                          File(_imagelist[index].path),
                           height: 100,
-                          width: 250,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                            ),
-                            itemCount: _imagelist.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    Image.file(
-                                      File(
-                                        _imagelist[index].path,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    Positioned(
-                                      top: -2,
-                                      right: -2,
-                                      child: Container(
-                                        child: IconButton(
-                                          onPressed: () {
-                                            _imagelist.removeAt(index);
-                                            if (_imagelist.length == 0) {
-                                              axis = false;
-                                            }
-                                            setState(() {});
-                                          },
-                                          icon: Icon(
-                                            Icons.delete_outline,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                          width: 40,
                         ),
+                        title: Text(_imagelist[index].name),
+                        trailing: IconButton(
+                            onPressed: () {
+                              _imagelist.removeAt(index);
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            )),
                       ),
-                    )
-                  : Container(),
+                    );
+                  },
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -583,9 +611,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                         borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(20),
                                     )),
-                                    builder: (context) => bottomsheet(
-                                        pickprofile(ImageSource.camera),
-                                        pickprofile(ImageSource.gallery)));
+                                    builder: (context) => bottomsheet());
                               }),
                             ),
                           )),
@@ -601,9 +627,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                 borderRadius: BorderRadius.vertical(
                               top: Radius.circular(20),
                             )),
-                            builder: (context) => bottomsheet(
-                                pickprofile(ImageSource.camera),
-                                pickprofile(ImageSource.gallery)));
+                            builder: (context) => bottomsheet());
                       },
                     ),
               Row(
@@ -632,7 +656,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     );
   }
 
-  Widget bottomsheet(var a, var b) {
+  Widget bottomsheet() {
     return Container(
       height: 100,
       width: MediaQuery.of(context).size.width,
@@ -650,15 +674,43 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton.icon(
-                onPressed: () {
-                  a(ImageSource.camera);
-                },
-                icon: Icon(Icons.camera),
-                label: Text("Camera"),
-              ),
+                  icon: Icon(Icons.camera),
+                  label: Text("Camera"),
+                  onPressed: () async {
+                    try {
+                      final selectedImage = await ImagePicker()
+                          .pickImage(source: ImageSource.camera);
+                      if (selectedImage != null) {
+                        if (_imagelist.length == 4) {
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Can choose only 4 images"),
+                          ));
+                        } else {
+                          _imagelist.add(selectedImage);
+                          setState(() {
+                            axis = true;
+                          });
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    } on PlatformException catch (e) {
+                      print("Failed to pick images  $e");
+                    }
+                  }),
               ElevatedButton.icon(
-                onPressed: () {
-                  b(ImageSource.gallery);
+                onPressed: () async {
+                  try {
+                    final selectedImage = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery);
+                    if (selectedImage != null) {
+                      _imagelist.add(selectedImage);
+                      axis = true;
+                    }
+                    setState(() {});
+                  } on PlatformException catch (e) {
+                    print("Failed to pick images  $e");
+                  }
                 },
                 icon: Icon(Icons.image),
                 label: Text("Gallery"),
