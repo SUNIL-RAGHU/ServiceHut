@@ -7,12 +7,14 @@ import 'package:email_auth/email_auth.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
+import 'package:snippet_coder_utils/multi_images_utils.dart';
 
 class RegisterProviderPage extends StatefulWidget {
   const RegisterProviderPage({
@@ -40,28 +42,43 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     ]
   };
 
-  final ImagePicker imgpicker = ImagePicker();
-  List<XFile>? imagefiles;
+  final ImagePicker _picker = ImagePicker();
 
-  void openImages() async {
+  File? image;
+
+  Future pickprofile(ImageSource source) async {
     try {
-      var pickedfiles = await imgpicker.pickMultiImage();
-      //you can use ImageCourse.camera for Camera capture
-      if (pickedfiles != null) {
-        imagefiles = pickedfiles;
-        setState(() {});
-      } else {
-        print("No image is selected.");
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+    } on PlatformException catch (e) {
+      print("Failed to pick images  $e");
+    }
+  }
+
+  Future selectImage(ImageSource source) async {
+    try {
+      final selectedImage = await ImagePicker().pickImage(source: source);
+      if (selectedImage != null) {
+        _imagelist.add(selectedImage);
+        axis = true;
       }
-    } catch (e) {
-      print("error while picking file.");
+      setState(() {});
+    } on PlatformException catch (e) {
+      print("Failed to pick images  $e");
     }
   }
 
   List<String> subCategoryChosen = [];
   List<String> selectedSubcategories = [];
+  List<XFile> _imagelist = [];
   String? selectedCategory;
   String? selectedProvince;
+  bool axis = false;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -108,8 +125,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
   }
 
   bool verifyotp = false;
+
   void sendOTP() async {
-    EmailAuth emailAuth = new EmailAuth(sessionName: "Email OTP verification");
+    EmailAuth emailAuth = EmailAuth(sessionName: "Email OTP verification");
     bool result = await emailAuth.sendOtp(
         recipientMail: _emailController.value.text, otpLength: 5);
     if (result) {
@@ -120,7 +138,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
   }
 
   void verifyOTP() async {
-    EmailAuth emailAuth = new EmailAuth(sessionName: "Verify OTP");
+    EmailAuth emailAuth = EmailAuth(sessionName: "Verify OTP");
     emailAuth.validateOtp(
         recipientMail: _emailController.value.text,
         userOtp: _otpController.value.text);
@@ -342,13 +360,6 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                               ))
                           .toList(),
                       onChanged: (category) {
-                        // if (country == 'USA') {
-                        //   provinces = usaProvince;
-                        // } else if (country == 'India') {
-                        //   provinces = indiaProvince;
-                        // } else {
-                        //   provinces = [];
-                        // }
                         setState(() {
                           selectedCategory = category;
                           subCategoryChosen = adj[selectedCategory]!;
@@ -361,38 +372,6 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
               SizedBox(
                 height: 20,
               ),
-              /* Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: DropdownButton<String>(
-                      hint: Text('Choose SubCategory'),
-                      value: selectedProvince,
-                      isExpanded: true,
-                      items: provinces.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (province) {
-                        setState(() {
-                          selectedProvince = province!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              */
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -440,7 +419,21 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                         border: Border.all(color: Colors.white),
                         borderRadius: BorderRadius.circular(12)),
                     child: GestureDetector(
-                        onTap: () => openImages(),
+                        onTap: () {
+                          /* showBottomSheet(
+                              context: context,
+                              builder: ((context) => bottomsheet()));
+                              */
+                          showModalBottomSheet(
+                              context: context,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              )),
+                              builder: (context) => bottomsheet(
+                                  selectImage(ImageSource.camera),
+                                  selectImage(ImageSource.gallery)));
+                        },
                         child: Padding(
                           padding: const EdgeInsets.only(
                             left: 20.0,
@@ -451,7 +444,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               // ignore: prefer_const_literals_to_create_immutables
                               children: [
-                                Text("Upload Image"),
+                                Text("Upload Your Works"),
                                 Icon(Icons.upload_file),
                               ],
                             ),
@@ -461,6 +454,62 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
               SizedBox(
                 height: 20,
               ),
+              axis
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: Expanded(
+                        child: Container(
+                          height: 100,
+                          width: 250,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                            ),
+                            itemCount: _imagelist.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Image.file(
+                                      File(
+                                        _imagelist[index].path,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Positioned(
+                                      top: -2,
+                                      right: -2,
+                                      child: Container(
+                                        child: IconButton(
+                                          onPressed: () {
+                                            _imagelist.removeAt(index);
+                                            if (_imagelist.length == 0) {
+                                              axis = false;
+                                            }
+                                            setState(() {});
+                                          },
+                                          icon: Icon(
+                                            Icons.delete_outline,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -509,6 +558,54 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
               SizedBox(
                 height: 20.0,
               ),
+              image != null
+                  ? Stack(children: [
+                      ClipOval(
+                        child: SizedBox.fromSize(
+                          child: Image.file(
+                            image!,
+                            width: 160,
+                            height: 160,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                          bottom: 15,
+                          right: 15,
+                          child: CircleAvatar(
+                            child: IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: (() {
+                                showModalBottomSheet(
+                                    context: context,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    )),
+                                    builder: (context) => bottomsheet(
+                                        pickprofile(ImageSource.camera),
+                                        pickprofile(ImageSource.gallery)));
+                              }),
+                            ),
+                          )),
+                    ])
+                  : GestureDetector(
+                      child: FlutterLogo(
+                        size: 160,
+                      ),
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            )),
+                            builder: (context) => bottomsheet(
+                                pickprofile(ImageSource.camera),
+                                pickprofile(ImageSource.gallery)));
+                      },
+                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -531,6 +628,44 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
             ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget bottomsheet(var a, var b) {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
+      child: Column(
+        children: [
+          Text("Choose Photos"),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  a(ImageSource.camera);
+                },
+                icon: Icon(Icons.camera),
+                label: Text("Camera"),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  b(ImageSource.gallery);
+                },
+                icon: Icon(Icons.image),
+                label: Text("Gallery"),
+              )
+            ],
+          )
+        ],
       ),
     );
   }

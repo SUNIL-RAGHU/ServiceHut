@@ -47,11 +47,12 @@ dependencies:
  
   image_picker: ^0.8.6
   razorpay_flutter: ^1.3.3
+  smooth_page_indicator: ^1.0.0+2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  get: ^4.6.5
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
