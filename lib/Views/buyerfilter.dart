@@ -127,13 +127,6 @@ class _BuyerfilterState extends State<Buyerfilter> {
                                       ))
                                   .toList(),
                               onChanged: (category) {
-                                // if (country == 'USA') {
-                                //   provinces = usaProvince;
-                                // } else if (country == 'India') {
-                                //   provinces = indiaProvince;
-                                // } else {
-                                //   provinces = [];
-                                // }
                                 setState(() {
                                   if (category != selectedCategory) {
                                     selectedProvince = null;

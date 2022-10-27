@@ -127,6 +127,7 @@ class _TaskpostState extends State<Taskpost> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
+                      readOnly: true,
                       controller: _emailController,
                       decoration: InputDecoration(
                           suffix: Padding(

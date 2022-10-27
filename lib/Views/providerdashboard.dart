@@ -41,6 +41,12 @@ class _ProviderdashboardState extends State<Providerdashboard> {
             "Android is a mobile operating system based on a modified version of the Linux kernel and other open source software, designed primarily for touchscreen mobile devices such as smartphones and tablets. ... Some well known derivatives include Android TV for televisions and Wear OS for wearables, both developed by Google.",
         colorsItem: Colors.green,
         img: 'assets/images/android_img.png'),
+    ItemModel(
+        Title: 'Ios',
+        Details:
+            "Android is a mobile operating system based on a modified version of the Linux kernel and other open source software, designed primarily for touchscreen mobile devices such as smartphones and tablets. ... Some well known derivatives include Android TV for televisions and Wear OS for wearables, both developed by Google.",
+        colorsItem: Colors.green,
+        img: 'assets/images/android_img.png'),
   ];
 
   void openCheckOut() async {
@@ -76,27 +82,6 @@ class _ProviderdashboardState extends State<Providerdashboard> {
         toastLength: Toast.LENGTH_SHORT);
   }
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: Settings',
-      style: optionStyle,
-    ),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -111,7 +96,7 @@ class _ProviderdashboardState extends State<Providerdashboard> {
         title: Text("Your Dashboard"),
         actions: <Widget>[
           Padding(
-              padding: EdgeInsets.only(right: 20.0, top: 20.0),
+              padding: EdgeInsets.only(right: 20.0, top: 10.0, bottom: 5),
               child: ElevatedButton(
                 onPressed: openCheckOut,
                 child: Text("Your Premimum"),
@@ -123,79 +108,131 @@ class _ProviderdashboardState extends State<Providerdashboard> {
         child: ListView.builder(
           itemCount: itemData.length,
           itemBuilder: (BuildContext context, int index) {
-            return ExpansionPanelList(
-              animationDuration: Duration(milliseconds: 1000),
-              dividerColor: Colors.red,
-              elevation: 1,
-              children: [
-                ExpansionPanel(
-                  body: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        ClipOval(
-                          child: CircleAvatar(
-                            child: FlutterLogo(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Text(
-                          itemData[index].Title.toString(),
-                          style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 15,
-                              letterSpacing: 0.3,
-                              height: 1.3),
-                        ),
-                      ],
-                    ),
-                  ),
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        itemData[index].Title!,
-                        style: TextStyle(
-                          color: itemData[index].colorsItem,
-                          fontSize: 18,
-                        ),
-                      ),
-                    );
-                  },
-                  isExpanded: itemData[index].expanded,
-                )
-              ],
-              expansionCallback: (int item, bool status) {
-                setState(() {
-                  itemData[index].expanded = !itemData[index].expanded;
-                });
-              },
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: ListTile(
+                  title: Text('Item ${itemData[index].Title.toString()}'),
+                  subtitle: Text(itemData[index].discription.toString()),
+                  trailing: Icon(Icons.arrow_circle_right),
+                ),
+              ),
+              // child: ExpansionPanelList(
+              //   animationDuration: Duration(milliseconds: 500),
+              //   elevation: 1,
+              //   children: [
+              //     ExpansionPanel(
+              //       body: Container(
+              //         child: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             // Text(
+              //             //   "Title:" + itemData[index].Title.toString(),
+              //             //   style: TextStyle(
+              //             //       color: Colors.grey[700],
+              //             //       fontSize: 25,
+              //             //       letterSpacing: 0.3,
+              //             //       height: 1.3),
+              //             // ),
+              //             Text(
+              //               "subcategory:" + itemData[index].Title.toString(),
+              //               style: TextStyle(
+              //                   color: Colors.grey[700],
+              //                   fontSize: 20,
+              //                   letterSpacing: 0.3,
+              //                   height: 1.3),
+              //             ),
+              //             SizedBox(
+              //               height: 10,
+              //             ),
+
+              //             const SizedBox(
+              //               height: 10,
+              //             ),
+              //             Text(
+              //               "Category:" + itemData[index].Title.toString(),
+              //               style: TextStyle(
+              //                   color: Colors.grey[700],
+              //                   fontSize: 20,
+              //                   letterSpacing: 0.3,
+              //                   height: 1.3),
+              //             ),
+              //             SizedBox(
+              //               height: 10,
+              //             ),
+              //             Text(
+              //               "subcategory:" + itemData[index].Title.toString(),
+              //               style: TextStyle(
+              //                   color: Colors.grey[700],
+              //                   fontSize: 20,
+              //                   letterSpacing: 0.3,
+              //                   height: 1.3),
+              //             ),
+              //             SizedBox(
+              //               height: 10,
+              //             ),
+              //             Text(
+              //               "Price:" + itemData[index].Title.toString(),
+              //               style: TextStyle(
+              //                   color: Colors.grey[700],
+              //                   fontSize: 20,
+              //                   letterSpacing: 0.3,
+              //                   height: 1.3),
+              //             ),
+              //             SizedBox(
+              //               height: 10,
+              //             ),
+              //             Text(
+              //               "Timing:" + itemData[index].Title.toString(),
+              //               style: TextStyle(
+              //                   color: Colors.grey[700],
+              //                   fontSize: 20,
+              //                   letterSpacing: 0.3,
+              //                   height: 1.3),
+              //             ),
+              //             // ignore: prefer_const_constructors
+              //             SizedBox(
+              //               height: 10,
+              //             ),
+              //             Text(
+              //               "About:" + itemData[index].Title.toString(),
+              //               style: TextStyle(
+              //                   color: Colors.grey[700],
+              //                   fontSize: 20,
+              //                   letterSpacing: 0.3,
+              //                   height: 1.3),
+              //             ),
+              //             ElevatedButton(
+              //               onPressed: () {},
+              //               child: Text("Interseted"),
+              //             )
+              //           ],
+              //         ),
+              //       ),
+              //       headerBuilder: (BuildContext context, bool isExpanded) {
+              //         return Container(
+              //           padding: EdgeInsets.all(10),
+              //           child: Text(
+              //             itemData[index].Title!,
+              //             style: TextStyle(
+              //               color: itemData[index].colorsItem,
+              //               fontSize: 18,
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //       isExpanded: itemData[index].expanded,
+              //     )
+              //   ],
+              //   expansionCallback: (int item, bool status) {
+              //     setState(() {
+              //       itemData[index].expanded = !itemData[index].expanded;
+              //     });
+              //   },
+              // ),
             );
           },
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Recent',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueGrey,
-        onTap: _onItemTapped,
       ),
     );
   }

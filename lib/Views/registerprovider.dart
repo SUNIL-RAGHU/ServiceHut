@@ -8,6 +8,8 @@ import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -26,7 +28,39 @@ class RegisterProviderPage extends StatefulWidget {
 }
 
 class _RegisterProviderPage extends State<RegisterProviderPage> {
+  Position? _currentPosition;
+  String? _currentAddress;
   String _fileText = "";
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.denied) {
+      return Future.error('Location permissions are denied');
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.low);
+    setState(() {
+      _currentPosition = position;
+      _getAddressFromLatLng();
+    });
+    print(position);
+
+    return await Geolocator.getCurrentPosition();
+  }
 
   Map<String, List<String>> adj = {
     "Carpenter": [
@@ -41,6 +75,12 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
       "Wall paper installation",
     ]
   };
+
+  @override
+  void initState() {
+    super.initState();
+    determinePosition();
+  }
 
   final ImagePicker _picker = ImagePicker();
 
@@ -76,6 +116,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
   List<String> subCategoryChosen = [];
   List<String> selectedSubcategories = [];
   List<XFile> _imagelist = [];
+  List<XFile> _docimagelist = [];
   String? selectedCategory;
   String? selectedProvince;
   bool axis = false;
@@ -179,7 +220,79 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                 style: TextStyle(fontSize: 20),
               ),
               SizedBox(
-                height: 50,
+                height: 20,
+              ),
+              image != null
+                  ? Stack(children: [
+                      ClipOval(
+                        child: SizedBox.fromSize(
+                          child: Image.file(
+                            image!,
+                            width: 160,
+                            height: 160,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                          bottom: 10,
+                          right: 30,
+                          child: CircleAvatar(
+                            child: IconButton(
+                              icon: image == null
+                                  ? Icon(Icons.add)
+                                  : Icon(Icons.edit),
+                              onPressed: (() {
+                                showModalBottomSheet(
+                                    context: context,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    )),
+                                    builder: (context) => bottomssheet());
+                              }),
+                            ),
+                          )),
+                    ])
+                  : GestureDetector(
+                      child: ClipOval(
+                        child: Stack(children: [
+                          Container(
+                            color: Colors.white,
+                            width: 160,
+                            height: 160,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.person,
+                                size: 150,
+                              ),
+                              onPressed: () {},
+                            ),
+                          ),
+                          Positioned(
+                              bottom: 10,
+                              right: 30,
+                              child: CircleAvatar(
+                                child: IconButton(
+                                  icon: image == null
+                                      ? Icon(Icons.add)
+                                      : Icon(Icons.edit),
+                                  onPressed: (() {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(1),
+                                        )),
+                                        builder: (context) => bottomssheet());
+                                  }),
+                                ),
+                              )),
+                        ]),
+                      ),
+                    ),
+              SizedBox(
+                height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -430,7 +543,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                   borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(20),
                               )),
-                              builder: (context) => bottomsheet());
+                              builder: (context) => bottomsheet(_imagelist));
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -452,62 +565,6 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
               SizedBox(
                 height: 20,
               ),
-              // axis
-              //     ? Padding(
-              //         padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              //         child: Expanded(
-              //           child: Container(
-              //             height: 100,
-              //             width: 250,
-              //             decoration: BoxDecoration(
-              //               borderRadius: BorderRadius.circular(12),
-              //             ),
-              //             child: GridView.builder(
-              //               gridDelegate:
-              //                   const SliverGridDelegateWithFixedCrossAxisCount(
-              //                 crossAxisCount: 4,
-              //               ),
-              //               itemCount: _imagelist.length,
-              //               itemBuilder: (context, index) {
-              //                 return Padding(
-              //                   padding: const EdgeInsets.all(2.0),
-              //                   child: Stack(
-              //                     fit: StackFit.expand,
-              //                     children: [
-              //                       Image.file(
-              //                         File(
-              //                           _imagelist[index].path,
-              //                         ),
-              //                         fit: BoxFit.cover,
-              //                       ),
-              //                       Positioned(
-              //                         top: -2,
-              //                         right: -2,
-              //                         child: Container(
-              //                           child: IconButton(
-              //                             onPressed: () {
-              //                               _imagelist.removeAt(index);
-              //                               if (_imagelist.length == 0) {
-              //                                 axis = false;
-              //                               }
-              //                               setState(() {});
-              //                             },
-              //                             icon: Icon(
-              //                               Icons.delete_outline,
-              //                               color: Colors.red,
-              //                             ),
-              //                           ),
-              //                         ),
-              //                       )
-              //                     ],
-              //                   ),
-              //                 );
-              //               },
-              //             ),
-              //           ),
-              //         ),
-              //       )
-              //     : Container(),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
                 child: ListView.builder(
@@ -556,6 +613,79 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 20.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12)),
+                  child: GestureDetector(
+                    onTap: () {
+                      /* showBottomSheet(
+                              context: context,
+                              builder: ((context) => bottomsheet()));
+                              */
+                      showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          )),
+                          builder: (context) => bottomsheet(_docimagelist));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 20.0,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            Text("Upload Aadhar Card/Pan Card"),
+                            Icon(Icons.upload_file),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _docimagelist.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: ListTile(
+                        leading: Image.file(
+                          File(_docimagelist[index].path),
+                          height: 100,
+                          width: 40,
+                        ),
+                        title: Text(_docimagelist[index].name),
+                        trailing: IconButton(
+                            onPressed: () {
+                              _docimagelist.removeAt(index);
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            )),
+                      ),
+                    );
+                  },
+                ),
+              ),
               Text(_fileText),
               SizedBox(
                 height: 20.0,
@@ -586,50 +716,6 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
               SizedBox(
                 height: 20.0,
               ),
-              image != null
-                  ? Stack(children: [
-                      ClipOval(
-                        child: SizedBox.fromSize(
-                          child: Image.file(
-                            image!,
-                            width: 160,
-                            height: 160,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                          bottom: 15,
-                          right: 15,
-                          child: CircleAvatar(
-                            child: IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: (() {
-                                showModalBottomSheet(
-                                    context: context,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    )),
-                                    builder: (context) => bottomsheet());
-                              }),
-                            ),
-                          )),
-                    ])
-                  : GestureDetector(
-                      child: FlutterLogo(
-                        size: 160,
-                      ),
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
-                            )),
-                            builder: (context) => bottomsheet());
-                      },
-                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -648,7 +734,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                     ),
                   ),
                 ],
-              )
+              ),
             ]),
           ),
         ),
@@ -656,7 +742,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     );
   }
 
-  Widget bottomsheet() {
+  Widget bottomsheet(var _imagelist) {
     return Container(
       height: 100,
       width: MediaQuery.of(context).size.width,
@@ -720,5 +806,82 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         ],
       ),
     );
+  }
+
+  Widget bottomssheet() {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
+      child: Column(
+        children: [
+          Text("Choose Photos"),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton.icon(
+                  icon: Icon(Icons.camera),
+                  label: Text("Camera"),
+                  onPressed: () async {
+                    try {
+                      final image = await ImagePicker()
+                          .pickImage(source: ImageSource.camera);
+                      if (image == null) return;
+
+                      final imageTemporary = File(image.path);
+                      setState(() {
+                        this.image = imageTemporary;
+                      });
+                      Navigator.of(context).pop();
+                    } on PlatformException catch (e) {
+                      print("Failed to pick images  $e");
+                    }
+                  }),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  try {
+                    final image = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery);
+                    if (image == null) return;
+
+                    final imageTemporary = File(image.path);
+                    setState(() {
+                      this.image = imageTemporary;
+                    });
+                    Navigator.of(context).pop();
+                  } on PlatformException catch (e) {
+                    print("Failed to pick images  $e");
+                  }
+                },
+                icon: Icon(Icons.image),
+                label: Text("Gallery"),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition!.latitude, _currentPosition!.longitude);
+
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _currentAddress =
+            "${place.locality}, ${place.postalCode}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }
