@@ -187,10 +187,10 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         int.parse(_PhoneNumberController.text.trim()),
         selectedCategory!,
         _emailController.text.trim(),
-        subCategoryChosen,
+        selectedSubcategories,
         workImageUrls!,
         documentImageUrls!,
-        profilePicUrl,
+        profilePicUrl!,
         uid,
         Latitude,
         Longitude,
@@ -212,7 +212,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
       UploadTask uploadTask = ref.putFile(Profileimage!);
       String? imageUrl;
 
-      uploadTask.whenComplete(() async {
+      await uploadTask.whenComplete(() async {
         try {
           imageUrl = await ref.getDownloadURL();
         } catch (onError) {
@@ -233,9 +233,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     String SelectedCategory,
     String Email,
     List<String?> Subcategory,
-    List<String?> pics_of_works,
-    List<String?> id_proofs,
-    String? ProfilePic,
+    List<String?>? pics_of_works,
+    List<String?>? id_proofs,
+    String ProfilePic,
     String? uid,
     String? longitude,
     String? Latitude,

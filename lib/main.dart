@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:svlp/AdminPanel/views/AllProviderInfo.dart';
 import 'package:svlp/AdminPanel/views/ProviderInfovalid.dart';
 import 'package:svlp/AdminPanel/views/TaskInfovalid.dart';
+import 'package:svlp/Authorization/SigninBuyer.dart';
 import 'package:svlp/Authorization/login_page.dart';
 import 'package:svlp/Views/posttask.dart';
 import 'package:svlp/Views/profilpage.dart';
@@ -26,7 +27,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
-    return MaterialApp(
-        debugShowCheckedModeBanner: false, home: RegisterProviderPage());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: RegisterPage());
   }
 }
