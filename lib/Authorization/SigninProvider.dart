@@ -63,8 +63,8 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         desiredAccuracy: LocationAccuracy.low);
     setState(() {
       _currentPosition = position;
-      Latitude=_currentPosition?.latitude.toString();
-      Longitude=_currentPosition?.longitude.toString();
+      Latitude = _currentPosition?.latitude.toString();
+      Longitude = _currentPosition?.longitude.toString();
 
       _getAddressFromLatLng();
     });
@@ -179,6 +179,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
       );
 
       final String? uid = credential.user?.uid;
+      final String? Roles = "Provider";
 
       addUserDetails(
         _NameController.text.trim(),
@@ -192,7 +193,8 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         profilePicUrl,
         uid,
         Latitude,
-          Longitude
+        Longitude,
+        Roles,
       );
     }
   }
@@ -237,6 +239,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     String? uid,
     String? longitude,
     String? Latitude,
+    String? Roles,
   ) async {
     await FirebaseFirestore.instance.collection('User').doc(uid).set({
       'Name': Name,
@@ -249,8 +252,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
       'Id_proofs': id_proofs,
       'Profile_Pics': ProfilePic,
       'Uid': uid,
-      'Latitude':Latitude,
-      'Longitude':longitude,
+      'Latitude': Latitude,
+      'Longitude': longitude,
+      'Roles': Roles
     });
   }
 
