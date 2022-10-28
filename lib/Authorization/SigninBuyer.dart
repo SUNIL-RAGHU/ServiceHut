@@ -20,7 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _confirmpasswordController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _ageController = TextEditingController();
+  final _PhoneNumberController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
 
   @override
@@ -31,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _confirmpasswordController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _ageController.dispose();
+    _PhoneNumberController.dispose();
     super.dispose();
   }
 
@@ -44,17 +44,17 @@ class _RegisterPageState extends State<RegisterPage> {
       addUserDetails(
           _firstNameController.text.trim(),
           _lastNameController.text.trim(),
-          int.parse(_ageController.text.trim()),
+          int.parse(_PhoneNumberController.text.trim()),
           _emailController.text.trim());
     }
   }
 
   Future addUserDetails(
-      String FirstName, String LastName, int Age, String Email) async {
+      String FirstName, String LastName, int PhoneNumber, String Email) async {
     await FirebaseFirestore.instance.collection('users').add({
       'First Name': FirstName,
       'Last Name': LastName,
-      'Age': Age,
+      'PhoneNumber': PhoneNumber,
       'Email': Email,
     });
   }
@@ -121,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: _emailController,
+                      controller: _PhoneNumberController,
                       decoration: InputDecoration(
                           suffix: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
@@ -136,7 +136,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                           border: InputBorder.none,
-                          hintText: "Email"),
+                          hintText: "PhoneNumber"),
                     ),
                   ),
                 ),
@@ -271,9 +271,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: _ageController,
+                      controller: _emailController,
                       decoration: InputDecoration(
-                          border: InputBorder.none, hintText: "Age"),
+                          border: InputBorder.none, hintText: "Email"),
                     ),
                   ),
                 ),

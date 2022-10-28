@@ -1,22 +1,25 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_auth/email_auth.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:snippet_coder_utils/multi_images_utils.dart';
+import 'package:svlp/Views/profilpage.dart';
+import 'package:path/path.dart' as Path;
 
 class RegisterProviderPage extends StatefulWidget {
   const RegisterProviderPage({
@@ -28,9 +31,14 @@ class RegisterProviderPage extends StatefulWidget {
 }
 
 class _RegisterProviderPage extends State<RegisterProviderPage> {
+  double val = 0;
   Position? _currentPosition;
+  String? Latitude;
+  String? Longitude;
   String? _currentAddress;
-  String _fileText = "";
+
+  String? ProfileFileName;
+
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -55,6 +63,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         desiredAccuracy: LocationAccuracy.low);
     setState(() {
       _currentPosition = position;
+      Latitude=_currentPosition?.latitude.toString();
+      Longitude=_currentPosition?.longitude.toString();
+
       _getAddressFromLatLng();
     });
     print(position);
@@ -79,32 +90,44 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
   @override
   void initState() {
     super.initState();
+
     determinePosition();
+  }
+
+  Future<List<String?>?> uploadFile(
+      List<XFile> payload, String directory) async {
+    List<String?> workImageUrls = [];
+    for (var imgFile in payload) {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child(directory)
+          .child(DateTime.now().toIso8601String() + imgFile.name);
+
+      UploadTask uploadTask = ref.putFile(Profileimage!);
+      String? imageUrl;
+
+      uploadTask.whenComplete(() async {
+        try {
+          imageUrl = await ref.getDownloadURL();
+        } catch (onError) {
+          print("Error");
+        }
+      });
+
+      workImageUrls.add(imageUrl);
+    }
+    return workImageUrls;
   }
 
   final ImagePicker _picker = ImagePicker();
 
-  File? image;
-
-  Future pickprofile(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-
-      final imageTemporary = File(image.path);
-      setState(() {
-        this.image = imageTemporary;
-      });
-    } on PlatformException catch (e) {
-      print("Failed to pick images  $e");
-    }
-  }
+  File? Profileimage;
 
   Future<void> selectImage(ImageSource source) async {
     try {
       final selectedImage = await ImagePicker().pickImage(source: source);
       if (selectedImage != null) {
-        _imagelist.add(selectedImage);
+        _ProviderWorkimagelist.add(selectedImage);
         axis = true;
       }
       setState(() {});
@@ -115,19 +138,19 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
 
   List<String> subCategoryChosen = [];
   List<String> selectedSubcategories = [];
-  List<XFile> _imagelist = [];
-  List<XFile> _docimagelist = [];
+  List<XFile> _ProviderWorkimagelist = [];
+  List<XFile> _Providerdocimagelist = [];
   String? selectedCategory;
-  String? selectedProvince;
+
   bool axis = false;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _ageController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
+  final _NameController = TextEditingController();
+  final _otpController = TextEditingController();
+  final _PhoneNumberController = TextEditingController();
+  final _AboutController = TextEditingController();
 
   @override
   void dispose() {
@@ -135,33 +158,99 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmpasswordController.dispose();
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _ageController.dispose();
+    _NameController.dispose();
+    _PhoneNumberController.dispose();
+    _AboutController.dispose();
     super.dispose();
   }
 
   Future signUp() async {
     if (passwordConfirmed()) {
-      FirebaseAuth.instance.createUserWithEmailAndPassword(
+      String? profilePicUrl = await uploadProfileFile();
+      List<String?>? workImageUrls =
+          await uploadFile(_ProviderWorkimagelist, "Work Images");
+      List<String?>? documentImageUrls =
+          await uploadFile(_Providerdocimagelist, "Document Images");
+
+      final UserCredential credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
+      final String? uid = credential.user?.uid;
+
       addUserDetails(
-          _firstNameController.text.trim(),
-          _lastNameController.text.trim(),
-          int.parse(_ageController.text.trim()),
-          _emailController.text.trim());
+        _NameController.text.trim(),
+        _AboutController.text.trim(),
+        int.parse(_PhoneNumberController.text.trim()),
+        selectedCategory!,
+        _emailController.text.trim(),
+        subCategoryChosen,
+        workImageUrls!,
+        documentImageUrls!,
+        profilePicUrl,
+        uid,
+        Latitude,
+          Longitude
+      );
+    }
+  }
+
+  Future<String?> uploadProfileFile() async {
+    if (Profileimage == null) {
+      // show toast -> pls select image
+    }
+
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child("Profile Images")
+          .child(DateTime.now().toIso8601String());
+      UploadTask uploadTask = ref.putFile(Profileimage!);
+      String? imageUrl;
+
+      uploadTask.whenComplete(() async {
+        try {
+          imageUrl = await ref.getDownloadURL();
+        } catch (onError) {
+          print("Error");
+        }
+      });
+
+      return imageUrl;
+    } catch (e) {
+      print('error occured');
     }
   }
 
   Future addUserDetails(
-      String FirstName, String LastName, int Age, String Email) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'First Name': FirstName,
-      'Last Name': LastName,
-      'Age': Age,
+    String Name,
+    String About,
+    int PhoneNumber,
+    String SelectedCategory,
+    String Email,
+    List<String?> Subcategory,
+    List<String?> pics_of_works,
+    List<String?> id_proofs,
+    String? ProfilePic,
+    String? uid,
+    String? longitude,
+    String? Latitude,
+  ) async {
+    await FirebaseFirestore.instance.collection('User').doc(uid).set({
+      'Name': Name,
+      'About': About,
+      'PhoneNumber': PhoneNumber,
       'Email': Email,
+      'SelectedCategory': SelectedCategory,
+      'SubCategory': Subcategory,
+      'WorkdoneImages': pics_of_works,
+      'Id_proofs': id_proofs,
+      'Profile_Pics': ProfilePic,
+      'Uid': uid,
+      'Latitude':Latitude,
+      'Longitude':longitude,
     });
   }
 
@@ -176,13 +265,6 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         verifyotp = true;
       });
     }
-  }
-
-  void verifyOTP() async {
-    EmailAuth emailAuth = EmailAuth(sessionName: "Verify OTP");
-    emailAuth.validateOtp(
-        recipientMail: _emailController.value.text,
-        userOtp: _otpController.value.text);
   }
 
   bool passwordConfirmed() {
@@ -222,12 +304,12 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
               SizedBox(
                 height: 20,
               ),
-              image != null
+              Profileimage != null
                   ? Stack(children: [
                       ClipOval(
                         child: SizedBox.fromSize(
                           child: Image.file(
-                            image!,
+                            Profileimage!,
                             width: 160,
                             height: 160,
                             fit: BoxFit.cover,
@@ -239,7 +321,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                           right: 30,
                           child: CircleAvatar(
                             child: IconButton(
-                              icon: image == null
+                              icon: Profileimage == null
                                   ? Icon(Icons.add)
                                   : Icon(Icons.edit),
                               onPressed: (() {
@@ -249,7 +331,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                         borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(20),
                                     )),
-                                    builder: (context) => bottomssheet());
+                                    builder: (context) => Profilebottomsheet());
                               }),
                             ),
                           )),
@@ -274,7 +356,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                               right: 30,
                               child: CircleAvatar(
                                 child: IconButton(
-                                  icon: image == null
+                                  icon: Profileimage == null
                                       ? Icon(Icons.add)
                                       : Icon(Icons.edit),
                                   onPressed: (() {
@@ -284,7 +366,8 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                             borderRadius: BorderRadius.vertical(
                                           top: Radius.circular(1),
                                         )),
-                                        builder: (context) => bottomssheet());
+                                        builder: (context) =>
+                                            Profilebottomsheet());
                                   }),
                                 ),
                               )),
@@ -304,7 +387,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: _emailController,
+                      controller: _PhoneNumberController,
                       decoration: InputDecoration(
                           suffix: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
@@ -313,13 +396,11 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                 "Send OTP",
                                 style: TextStyle(color: Colors.blueAccent),
                               ),
-                              onTap: () {
-                                sendOTP();
-                              },
+                              onTap: () {},
                             ),
                           ),
                           border: InputBorder.none,
-                          hintText: "Email"),
+                          hintText: "Phone Number"),
                     ),
                   ),
                 ),
@@ -356,9 +437,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                                       style:
                                           TextStyle(color: Colors.blueAccent),
                                     ),
-                                    onTap: () {
-                                      verifyOTP();
-                                    },
+                                    onTap: () {},
                                   ),
                                 ),
                           border: InputBorder.none,
@@ -423,7 +502,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: _firstNameController,
+                      controller: _NameController,
                       decoration: InputDecoration(
                           border: InputBorder.none, hintText: "FirstName"),
                     ),
@@ -443,9 +522,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: _lastNameController,
+                      controller: _emailController,
                       decoration: InputDecoration(
-                          border: InputBorder.none, hintText: "Mobile Number"),
+                          border: InputBorder.none, hintText: "E-mail"),
                     ),
                   ),
                 ),
@@ -509,8 +588,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                         ),
                       ),
                       items: subCategoryChosen
-                          .map((indiaProvince) => MultiSelectItem<String>(
-                              indiaProvince, indiaProvince))
+                          .map((SubcategoriesProvince) =>
+                              MultiSelectItem<String>(
+                                  SubcategoriesProvince, SubcategoriesProvince))
                           .toList(),
                       title: Text("Sub Categories"),
                       searchable: true,
@@ -533,17 +613,14 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                         borderRadius: BorderRadius.circular(12)),
                     child: GestureDetector(
                         onTap: () {
-                          /* showBottomSheet(
-                              context: context,
-                              builder: ((context) => bottomsheet()));
-                              */
                           showModalBottomSheet(
                               context: context,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(20),
                               )),
-                              builder: (context) => bottomsheet(_imagelist));
+                              builder: (context) =>
+                                  Providerbottomsheet(_ProviderWorkimagelist));
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -570,20 +647,20 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: _imagelist.length,
+                  itemCount: _ProviderWorkimagelist.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: ListTile(
                         leading: Image.file(
-                          File(_imagelist[index].path),
+                          File(_ProviderWorkimagelist[index].path),
                           height: 100,
                           width: 40,
                         ),
-                        title: Text(_imagelist[index].name),
+                        title: Text(_ProviderWorkimagelist[index].name),
                         trailing: IconButton(
                             onPressed: () {
-                              _imagelist.removeAt(index);
+                              _ProviderWorkimagelist.removeAt(index);
                               setState(() {});
                             },
                             icon: Icon(
@@ -606,7 +683,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                     padding: const EdgeInsets.only(left: 20.0, bottom: 30.0),
                     child: TextField(
                       maxLines: 5,
-                      controller: _ageController,
+                      controller: _AboutController,
                       decoration: InputDecoration(
                           border: InputBorder.none, hintText: "About"),
                     ),
@@ -635,7 +712,8 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                               borderRadius: BorderRadius.vertical(
                             top: Radius.circular(20),
                           )),
-                          builder: (context) => bottomsheet(_docimagelist));
+                          builder: (context) =>
+                              Providerbottomsheet(_Providerdocimagelist));
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -661,20 +739,20 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: _docimagelist.length,
+                  itemCount: _Providerdocimagelist.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: ListTile(
                         leading: Image.file(
-                          File(_docimagelist[index].path),
+                          File(_Providerdocimagelist[index].path),
                           height: 100,
                           width: 40,
                         ),
-                        title: Text(_docimagelist[index].name),
+                        title: Text(_Providerdocimagelist[index].name),
                         trailing: IconButton(
                             onPressed: () {
-                              _docimagelist.removeAt(index);
+                              _Providerdocimagelist.removeAt(index);
                               setState(() {});
                             },
                             icon: Icon(
@@ -686,7 +764,6 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                   },
                 ),
               ),
-              Text(_fileText),
               SizedBox(
                 height: 20.0,
               ),
@@ -742,7 +819,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     );
   }
 
-  Widget bottomsheet(var _imagelist) {
+  Widget Providerbottomsheet(var _imagelist) {
     return Container(
       height: 100,
       width: MediaQuery.of(context).size.width,
@@ -768,7 +845,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                           .pickImage(source: ImageSource.camera);
                       if (selectedImage != null) {
                         if (_imagelist.length == 4) {
+                          // ignore: use_build_context_synchronously
                           Navigator.of(context).pop();
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text("Can choose only 4 images"),
                           ));
@@ -777,6 +856,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                           setState(() {
                             axis = true;
                           });
+                          // ignore: use_build_context_synchronously
                           Navigator.of(context).pop();
                         }
                       }
@@ -808,7 +888,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     );
   }
 
-  Widget bottomssheet() {
+  Widget Profilebottomsheet() {
     return Container(
       height: 100,
       width: MediaQuery.of(context).size.width,
@@ -836,7 +916,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
 
                       final imageTemporary = File(image.path);
                       setState(() {
-                        this.image = imageTemporary;
+                        Profileimage = imageTemporary;
                       });
                       Navigator.of(context).pop();
                     } on PlatformException catch (e) {
@@ -851,8 +931,10 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
                     if (image == null) return;
 
                     final imageTemporary = File(image.path);
+                    final imageTemporaryfilename = File(image.name);
                     setState(() {
-                      this.image = imageTemporary;
+                      this.Profileimage = imageTemporary;
+                      ProfileFileName = imageTemporaryfilename.toString();
                     });
                     Navigator.of(context).pop();
                   } on PlatformException catch (e) {

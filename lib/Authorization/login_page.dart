@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:svlp/Views/registerbuyer.dart';
-import 'package:svlp/Views/registerprovider.dart';
+import 'package:svlp/Authorization/SigninBuyer.dart';
+import 'package:svlp/Authorization/SigninProvider.dart';
 
-import 'forgot_pw_page.dart';
+import '../Views/forgot_pw_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
