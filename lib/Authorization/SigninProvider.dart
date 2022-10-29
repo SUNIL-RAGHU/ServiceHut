@@ -87,9 +87,34 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     ]
   };
 
-  Map<String,String> BuyerDashboardImage={
-    "Carpenter":
-  }
+  Map<String, String> BuyerDashboardImage = {
+    "Carpenter": "https://unsplash.com/photos/IvzvlKQwjk8",
+    "Ac Repair Services":
+        "https://www.freepik.com/free-photo/hvac-technician-working-capacitor-part-condensing-unit-male-worker-repairman-uniform-repairing-adjusting-conditioning-system-diagnosing-looking-technical-issues_10444780.htm#query=air%20conditioner%20repair&position=9&from_view=keyword",
+    "Painting":
+        "https://www.freepik.com/free-photo/portrait-repairer-woman-with-painting-roller-isolated_4410817.htm#query=PAINTER&position=0&from_view=search&track=sph",
+    "Pest Control Services": "https://unsplash.com/photos/wz3ijPHvL54",
+    "Housekeeping services": "",
+    "Welding/fabricator": "",
+    "Plumber services": "",
+    "CCTV installation": "",
+    "Electrician": "",
+    "Beauty & Makeup": "",
+    "Civil Works/Interior decorator": "",
+    "Scrap Collection": "",
+    "Yoga & Fitness": "",
+    "Home Chefs": "",
+    "Home tutors": "",
+    "Dance & Music trainers": "",
+    "Language trainers": "",
+    "Computer (IT trainers)": "",
+    "Hamal(General Labor) ": "",
+    "Packer & Movers": "",
+    "Healthcare": "",
+    "Real Estate": "",
+    "Appliances repair ": "",
+    "Cook/Chef/Aayah": ""
+  };
 
   @override
   void initState() {
@@ -192,6 +217,8 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         Longitude,
         Roles,
       );
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
     }
   }
 

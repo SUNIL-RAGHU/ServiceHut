@@ -1,13 +1,17 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Taskpost extends StatefulWidget {
-  const Taskpost({
+  String? Id;
+  Taskpost({
     Key? key,
+    required Id,
   }) : super(key: key);
 
   @override
@@ -15,24 +19,12 @@ class Taskpost extends StatefulWidget {
 }
 
 class _TaskpostState extends State<Taskpost> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmpasswordController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _ageController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
+  final _TitleController = TextEditingController();
+  final _DetailsController = TextEditingController();
 
   @override
   void dispose() {
     // TODO: implement dispose
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmpasswordController.dispose();
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _ageController.dispose();
-    super.dispose();
   }
 
   var items = [
@@ -46,7 +38,33 @@ class _TaskpostState extends State<Taskpost> {
   String? pricerange;
   String? timeline;
   List<String> subCategoryChosen = [];
-  List<String> selectedSubcategories = [];
+  Future addTaskDetails(
+    String Title,
+    String? TaskSelectedCategory,
+    String? TaskselectedSubCategory,
+    String? pricerange,
+    String? timeline,
+    String? Details,
+    String? uid,
+    // String? longitude,
+    // String? Latitude,
+  ) async {
+    await FirebaseFirestore.instance.collection('Tasks').doc(uid).set({
+      'Title': Title,
+      'TaskSelectedCategory': TaskSelectedCategory,
+      'TaskselectedSubCategory': TaskselectedSubCategory,
+      'pricerange': pricerange,
+      'timeline': timeline,
+      'Details': Details,
+      'Uid': uid,
+      'isAccepted': false,
+      // 'Latitude': Latitude,
+      // 'Longitude': longitude,
+    });
+  }
+
+  String? TaskselectedCategory;
+  String? TaskselectedSubCategory;
 
   Map<String, List<String>> adj = {
     "Carpenter": [
@@ -62,35 +80,19 @@ class _TaskpostState extends State<Taskpost> {
     ]
   };
 
-  bool passwordConfirmed() {
-    if (_passwordController.text.trim() ==
-        _confirmpasswordController.text.trim()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  Future Submit() async {
+    log("on submit called");
+    addTaskDetails(
+      _TitleController.text.trim(),
+      TaskselectedCategory,
+      TaskselectedSubCategory,
+      pricerange,
+      timeline,
+      _DetailsController.text.trim(),
+      FirebaseAuth.instance.currentUser!.uid,
+    );
 
-  bool verifyotp = false;
-  void sendOTP() async {
-    EmailAuth emailAuth = new EmailAuth(sessionName: "Email OTP verification");
-    bool result = await emailAuth.sendOtp(
-        recipientMail: _emailController.value.text, otpLength: 5);
-    if (result) {
-      setState(() {
-        verifyotp = true;
-      });
-    }
-  }
-
-  String? selectedCategory;
-  String? selectedSubCategory;
-
-  void verifyOTP() async {
-    EmailAuth emailAuth = new EmailAuth(sessionName: "Verify OTP");
-    emailAuth.validateOtp(
-        recipientMail: _emailController.value.text,
-        userOtp: _otpController.value.text);
+    // ignore: use_build_context_synchronously
   }
 
   @override
@@ -127,20 +129,9 @@ class _TaskpostState extends State<Taskpost> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      readOnly: true,
-                      controller: _emailController,
+                      controller: _TitleController,
                       decoration: InputDecoration(
-                          suffix: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: InkWell(
-                              child: Text(
-                                "Title",
-                                style: TextStyle(color: Colors.blueAccent),
-                              ),
-                            ),
-                          ),
-                          border: InputBorder.none,
-                          hintText: "Title"),
+                          border: InputBorder.none, hintText: "Title"),
                     ),
                   ),
                 ),
@@ -159,7 +150,7 @@ class _TaskpostState extends State<Taskpost> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: DropdownButton<String>(
                       hint: Text('Choose Category'),
-                      value: selectedCategory,
+                      value: TaskselectedCategory,
                       isExpanded: true,
                       items: adj.keys
                           .map((value) => DropdownMenuItem<String>(
@@ -169,11 +160,11 @@ class _TaskpostState extends State<Taskpost> {
                           .toList(),
                       onChanged: (category) {
                         setState(() {
-                          if (category != selectedCategory) {
-                            selectedSubCategory = null;
+                          if (category != TaskselectedCategory) {
+                            TaskselectedSubCategory = null;
                           }
-                          selectedCategory = category;
-                          subCategoryChosen = adj[selectedCategory]!;
+                          TaskselectedCategory = category;
+                          subCategoryChosen = adj[TaskselectedCategory]!;
                         });
                       },
                     ),
@@ -194,7 +185,7 @@ class _TaskpostState extends State<Taskpost> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: DropdownButton<String>(
                       hint: Text(' Sub-Category'),
-                      value: selectedSubCategory,
+                      value: TaskselectedSubCategory,
                       isExpanded: true,
                       items: subCategoryChosen
                           .map((value) => DropdownMenuItem<String>(
@@ -204,7 +195,7 @@ class _TaskpostState extends State<Taskpost> {
                           .toList(),
                       onChanged: (category) {
                         setState(() {
-                          selectedSubCategory = category;
+                          TaskselectedSubCategory = category;
                         });
                       },
                     ),
@@ -287,7 +278,7 @@ class _TaskpostState extends State<Taskpost> {
                     padding: const EdgeInsets.only(left: 20.0, bottom: 30.0),
                     child: TextField(
                       maxLines: 5,
-                      controller: _ageController,
+                      controller: _DetailsController,
                       decoration: InputDecoration(
                           border: InputBorder.none, hintText: "Details"),
                     ),
@@ -300,6 +291,9 @@ class _TaskpostState extends State<Taskpost> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: GestureDetector(
+                  onTap: () async {
+                    await Submit();
+                  },
                   child: Container(
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(

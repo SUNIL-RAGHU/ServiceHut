@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:svlp/Views/searchbar.dart';
 
 import '../Models/UserModel.dart';
-import '../Views/profilpage.dart';
 import '../Views/providerdashboard.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,43 +30,31 @@ class ControlScreen extends StatefulWidget {
 class _ControlScreenState extends State<ControlScreen> {
   var user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
-  var Roles;
-  var Email;
-  var id;
-  @override
-  void initState() {
-    super.initState();
-    FirebaseFirestore.instance
-        .collection("User") //.where('uid', isEqualTo: user!.uid)
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      this.loggedInUser = UserModel.fromMap(value.data());
-    }).whenComplete(() {
-      CircularProgressIndicator();
-      setState(() {
-        Email = loggedInUser.Email.toString();
-        Roles = loggedInUser.Roles.toString();
-        id = FirebaseAuth.instance.currentUser?.uid;
-      });
-    });
-  }
-
-  routing() {
-    if (Roles == 'Provider') {
-      return Search(
-        id: id,
-      );
-    } else {
-      return Providerdashboard(
-        id: id,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    CircularProgressIndicator();
-    return routing();
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('User')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          loggedInUser = UserModel.fromMap(snapshot.data);
+
+          if (loggedInUser.Roles == 'Provider') {
+            return Search(
+              id: loggedInUser.Uid,
+            );
+          } else {
+            return Providerdashboard(
+              id: loggedInUser.Uid!,
+            );
+          }
+        }
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
   }
 }

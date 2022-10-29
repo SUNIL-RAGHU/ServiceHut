@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:svlp/Views/posttask.dart';
 
 class Buyerfilter extends StatefulWidget {
   final String? category;
   final String? subCategory;
+  final String? Id;
 
-  const Buyerfilter({super.key, this.category, this.subCategory});
+  const Buyerfilter(
+      {super.key, required this.category, this.subCategory, required this.Id});
 
   @override
   State<Buyerfilter> createState() => _BuyerfilterState();
@@ -178,7 +179,9 @@ class _BuyerfilterState extends State<Buyerfilter> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Taskpost()),
+                              builder: (context) => Taskpost(
+                                    Id: widget.Id,
+                                  )),
                         );
                       },
                       leading: const CircleAvatar(
