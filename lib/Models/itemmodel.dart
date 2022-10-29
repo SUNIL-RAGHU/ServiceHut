@@ -7,7 +7,6 @@ class ItemModel {
   String? subcategory;
   String? Price;
   String? Details;
-
   String? discription;
   Color? colorsItem;
   String? img;

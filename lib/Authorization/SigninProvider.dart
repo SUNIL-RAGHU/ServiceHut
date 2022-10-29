@@ -87,6 +87,10 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     ]
   };
 
+  Map<String,String> BuyerDashboardImage={
+    "Carpenter":
+  }
+
   @override
   void initState() {
     super.initState();
@@ -103,17 +107,9 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
           .child(directory)
           .child(DateTime.now().toIso8601String() + imgFile.name);
 
-      UploadTask uploadTask = ref.putFile(Profileimage!);
+      await ref.putFile(Profileimage!);
       String? imageUrl;
-
-      uploadTask.whenComplete(() async {
-        try {
-          imageUrl = await ref.getDownloadURL();
-        } catch (onError) {
-          print("Error");
-        }
-      });
-
+      imageUrl = await ref.getDownloadURL();
       workImageUrls.add(imageUrl);
     }
     return workImageUrls;
@@ -205,24 +201,18 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     }
 
     try {
-      final ref = firebase_storage.FirebaseStorage.instance
+      final ref = FirebaseStorage.instance
           .ref()
           .child("Profile Images")
           .child(DateTime.now().toIso8601String());
-      UploadTask uploadTask = ref.putFile(Profileimage!);
+      await ref.putFile(Profileimage!);
       String? imageUrl;
 
-      await uploadTask.whenComplete(() async {
-        try {
-          imageUrl = await ref.getDownloadURL();
-        } catch (onError) {
-          print("Error");
-        }
-      });
+      imageUrl = await ref.getDownloadURL();
 
       return imageUrl;
     } catch (e) {
-      print('error occured');
+      print(e);
     }
   }
 

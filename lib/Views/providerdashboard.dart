@@ -8,15 +8,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Models/itemmodel.dart';
 
+// ignore: must_be_immutable
 class Providerdashboard extends StatefulWidget {
-  const Providerdashboard({super.key});
-
+  String id;
+  Providerdashboard({super.key, required this.id});
   @override
   State<Providerdashboard> createState() => _ProviderdashboardState();
 }
 
 class _ProviderdashboardState extends State<Providerdashboard> {
   late Razorpay _razorpay;
+  // ignore: unused_field
   int _selectedIndex = 0;
 
   @override
@@ -67,21 +69,22 @@ class _ProviderdashboardState extends State<Providerdashboard> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(
-        msg: "Success" + response.paymentId!, toastLength: Toast.LENGTH_SHORT);
+        msg: "Success${response.paymentId!}", toastLength: Toast.LENGTH_SHORT);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     Fluttertoast.showToast(
-        msg: "ERROR" + response.code.toString() + " -" + response.message!,
+        msg: "ERROR${response.code} -${response.message!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(
-        msg: "External Wallet" + response.walletName!,
+        msg: "External Wallet${response.walletName!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 
+  // ignore: unused_element
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

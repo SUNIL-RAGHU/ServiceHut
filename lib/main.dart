@@ -10,6 +10,8 @@ import 'package:svlp/Views/profilpage.dart';
 import 'package:svlp/Views/providerdashboard.dart';
 import 'package:svlp/Views/recentproviderdashboard.dart';
 import 'package:svlp/Authorization/SigninProvider.dart';
+import 'package:svlp/auth/Role.dart';
+import 'package:svlp/auth/main_page.dart';
 import 'package:svlp/navigations/tabbar.dart';
 
 import 'AdminPanel/views/AdminDashboard.dart';
@@ -27,6 +29,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
-    return MaterialApp(debugShowCheckedModeBanner: false, home: RegisterPage());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: MainPage());
   }
 }

@@ -36,7 +36,9 @@ class _TabbarState extends State<Tabbar> {
       body: Stack(children: [
         renderview(
           0,
-          Providerdashboard(),
+          Providerdashboard(
+            id: '',
+          ),
         ),
         renderview(
           1,

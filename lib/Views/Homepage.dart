@@ -5,9 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
+  String id;
+  HomePage({super.key, required this.id});
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
         .collection("users")
         .orderBy('Age', descending: true)
         .get()
+        // ignore: avoid_function_literals_in_foreach_calls
         .then((snapshot) => snapshot.docs.forEach((document) {
               docIDs.add(document.reference.id);
             }));
@@ -43,32 +45,6 @@ class _HomePageState extends State<HomePage> {
               child: Icon(Icons.logout)),
         ],
       ),
-      /*  body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-                child: FutureBuilder(
-                    future: getDocId(),
-                    builder: (context, snapshot) {
-                      return ListView.builder(
-                          itemCount: docIDs.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListTile(
-                                title: GetUserName(
-                                  DocumentId: docIDs[index],
-                                ),
-                                tileColor: Colors.grey[200],
-                              ),
-                            );
-                          });
-                    }))
-          ],
-        ),
-      ),
-      */
     );
   }
 }

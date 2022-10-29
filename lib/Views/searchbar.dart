@@ -19,9 +19,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
-  const Search({
-    Key? key,
-  }) : super(key: key);
+  String id;
+  Search({super.key, required this.id});
 
   @override
   _SearchState createState() => new _SearchState();

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:svlp/auth/Role.dart';
 
 import '../Views/Homepage.dart';
 import '../Authorization/login_page.dart';
@@ -15,7 +16,7 @@ class MainPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return HomePage();
+              return HomeScreen();
             } else {
               return LoginPage();
             }
