@@ -111,23 +111,23 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-        title: Text(
-          'Sign out',
-          style: TextStyle(fontSize: 16),
-        ),
-        actions: [
-          GestureDetector(
-              onTap: (() async {
-                try {
-                  await FirebaseAuth.instance.signOut();
-                } catch (e) {
-                  log(e.toString());
-                }
-              }),
-              child: Icon(Icons.logout)),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     'Sign out',
+      //     style: TextStyle(fontSize: 16),
+      //   ),
+      //   actions: [
+      //     GestureDetector(
+      //         onTap: (() async {
+      //           try {
+      //             await FirebaseAuth.instance.signOut();
+      //           } catch (e) {
+      //             log(e.toString());
+      //           }
+      //         }),
+      //         child: Icon(Icons.logout)),
+      //   ],
+      // ),
       body: Stack(
         children: [
           Container(

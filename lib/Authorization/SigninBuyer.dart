@@ -52,6 +52,8 @@ class _RegisterPageState extends State<RegisterPage> {
           _emailController.text.trim(),
           uid!,
           Roles!);
+
+      Navigator.pop(context, true);
     }
   }
 

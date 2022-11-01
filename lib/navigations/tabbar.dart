@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:svlp/Views/profilpage.dart';
 import 'package:svlp/Views/providerdashboard.dart';
 import 'package:svlp/Views/recentproviderdashboard.dart';
+import 'package:svlp/Views/searchbar.dart';
+
+import '../Authorization/SigninBuyer.dart';
 
 class Tabbar extends StatefulWidget {
   const Tabbar({Key? key}) : super(key: key);

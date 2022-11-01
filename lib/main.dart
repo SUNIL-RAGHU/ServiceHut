@@ -1,7 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:svlp/Authorization/login_page.dart';
 
 import 'AdminPanel/views/AdminDashboard.dart';
+import 'Views/Check2.dart';
+import 'Views/providerdashboard.dart';
+import 'auth/main_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +22,9 @@ class MyApp extends StatelessWidget {
     // ignore: prefer_const_constructors
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AdminDashboard(),
+      home: Providerdashboard(
+        id: '',
+      ),
     );
   }
 }

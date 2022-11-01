@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:svlp/AdminPanel/views/TaskInfovalid.dart';
 
 import '../../Models/taskdetail.dart';
 
@@ -25,16 +26,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 .collection('Tasks')
                 .get()
                 .then((QuerySnapshot querySnapshot) {
-              querySnapshot.docs.forEach((doc) {
+              for (var doc in querySnapshot.docs) {
                 ds.add(Taskdetail.fromMap(doc.data()));
-              });
+              }
             });
-            print(ds[1].Title.toString());
+
             return SafeArea(
               child: Scaffold(
                 appBar: AppBar(
                   backgroundColor: Colors.blueGrey,
-                  title: Text("Accept New Providers"),
+                  title: Text("Accept New Tasks"),
                   leading: Icon(Icons.arrow_back),
                 ),
                 body: Container(
@@ -47,9 +48,21 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           padding: const EdgeInsets.all(8.0),
                           child: Card(
                             color: Colors.grey[300],
-                            child: ListTile(
-                              title: Text('Item ${ds[index].Title.toString()}'),
-                              trailing: Icon(Icons.arrow_circle_right),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TaskInfovalid(
+                                            ds: ds[index],
+                                          )),
+                                );
+                              },
+                              child: ListTile(
+                                title:
+                                    Text('Item ${ds[index].Title.toString()}'),
+                                trailing: Icon(Icons.arrow_circle_right),
+                              ),
                             ),
                           ),
                         );

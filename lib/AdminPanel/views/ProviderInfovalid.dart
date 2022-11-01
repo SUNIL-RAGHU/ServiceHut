@@ -183,7 +183,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                 height: 10,
               ),
               Text("Uploaded works"),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Padding(
@@ -210,11 +210,11 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text("Documents"),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Padding(
@@ -241,7 +241,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -251,8 +251,8 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       padding: EdgeInsets.all(40),
                       child: ElevatedButton(
                         onPressed: (() {}),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(20.0),
                           child: Text("Accept"),
                         ),
                       )),
@@ -260,8 +260,8 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       padding: EdgeInsets.all(40),
                       child: ElevatedButton(
                         onPressed: (() {}),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(20.0),
                           child: Text("Reject"),
                         ),
                       )),

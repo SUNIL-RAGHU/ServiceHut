@@ -41,7 +41,7 @@ class _ControlScreenState extends State<ControlScreen> {
         if (snapshot.hasData) {
           loggedInUser = UserModel.fromMap(snapshot.data);
 
-          if (loggedInUser.Roles == 'Provider') {
+          if (loggedInUser.Roles == 'Buyer') {
             return Search(
               id: loggedInUser.Uid,
             );

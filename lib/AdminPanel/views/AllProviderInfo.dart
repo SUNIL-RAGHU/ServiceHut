@@ -31,11 +31,11 @@ class _AllProviderInfoState extends State<AllProviderInfo> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blueGrey,
-          title: Text("All Providers"),
-          leading: Icon(Icons.arrow_back),
+          title: const Text("All Providers"),
+          leading: const Icon(Icons.arrow_back),
         ),
         body: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: itemData.length,
@@ -51,7 +51,7 @@ class _AllProviderInfoState extends State<AllProviderInfo> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.arrow_circle_right),
+                            icon: const Icon(Icons.arrow_circle_right),
                             onPressed: () {},
                           ),
                         ],
