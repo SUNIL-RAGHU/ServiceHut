@@ -2,31 +2,42 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:svlp/Models/taskdetail.dart';
+// import 'package:razorpay_flutter/razorpay_flutter.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../Models/ProviderDetails.dart';
-
-class AllProviderInfo extends StatefulWidget {
-  const AllProviderInfo({super.key});
+class RecentProviderdashboard extends StatefulWidget {
+  const RecentProviderdashboard({super.key});
 
   @override
-  State<AllProviderInfo> createState() => _AllProviderInfoState();
+  State<RecentProviderdashboard> createState() =>
+      _RecentProviderdashboardState();
 }
 
-class _AllProviderInfoState extends State<AllProviderInfo> {
+class _RecentProviderdashboardState extends State<RecentProviderdashboard> {
+  bool isLoaded = false;
+
   @override
   void initState() {
     super.initState();
+    // _razorpay = Razorpay();
+    // _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    // _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   @override
   void dispose() {
     super.dispose();
+    // _razorpay.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('User').get(),
+        future: FirebaseFirestore.instance.collection('Tasks').get(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           log("build method called");
           if (snapshot.hasData) {
@@ -34,16 +45,17 @@ class _AllProviderInfoState extends State<AllProviderInfo> {
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.blueGrey,
-                title: const Text("All Providers"),
+                title: const Text("Accept New Tasks"),
                 leading: const Icon(Icons.arrow_back),
               ),
               body: ListView(
                 children: documents.map(
                   (doc) {
                     Map data = (doc.data() as Map);
-                    Providerdetails currentTask = Providerdetails.fromMap(data);
+                    Taskdetail currentTask = Taskdetail.fromMap(data);
                     // if (data["isAccepted"]) {
-                    if (currentTask.isAccepted == true) {
+                    if (currentTask.BuyerAccepted == true &&
+                        currentTask.isAccepted == true) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
@@ -51,28 +63,14 @@ class _AllProviderInfoState extends State<AllProviderInfo> {
                           child: GestureDetector(
                             onTap: () {},
                             child: ListTile(
-                              title: Text(currentTask.Name.toString()),
-                              trailing: SizedBox(
-                                width: 70,
-                                child: Row(children: [
-                                  Expanded(
-                                      child: IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    onPressed: () {},
-                                  )),
-                                  Expanded(
-                                      child: IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () {},
-                                  )),
-                                ]),
-                              ),
+                              title: Text(currentTask.Title.toString()),
+                              trailing: Icon(Icons.arrow_circle_right),
                             ),
                           ),
                         ),
                       );
                     } else {
-                      return const SizedBox();
+                      return SizedBox();
                     }
                   },
                 ).toList(),

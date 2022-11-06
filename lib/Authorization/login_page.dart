@@ -8,7 +8,7 @@ import 'package:svlp/Authorization/SigninBuyer.dart';
 import 'package:svlp/Authorization/SigninProvider.dart';
 import 'package:svlp/auth/Role.dart';
 
-import '../Views/forgot_pw_page.dart';
+import 'forgot_pw_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({

@@ -1,30 +1,19 @@
-// ignore_for_file: unused_local_variable
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:svlp/AdminPanel/views/ProviderInfovalid.dart';
-import 'package:svlp/AdminPanel/views/TaskInfovalid.dart';
 
-import '../../Models/taskdetail.dart';
+import '../../Models/BuyerDetails.dart';
+import '../../Models/ProviderDetails.dart';
 
-// ignore: must_be_immutable
-class AdminDashboard extends StatefulWidget {
-  AdminDashboard({
-    super.key,
-  });
+class AllBuyerInfo extends StatefulWidget {
+  const AllBuyerInfo({super.key});
+
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  State<AllBuyerInfo> createState() => _AllBuyerInfoInfoState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
-  // late Razorpay _razorpay;
-  // ignore: unused_field
-  int _selectedIndex = 0;
-  List<Taskdetail> ds = [];
-  bool isLoaded = false;
-
+class _AllBuyerInfoInfoState extends State<AllBuyerInfo> {
   @override
   void initState() {
     super.initState();
@@ -38,7 +27,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('Tasks').get(),
+        future: FirebaseFirestore.instance.collection('User').get(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           log("build method called");
           if (snapshot.hasData) {
@@ -46,33 +35,26 @@ class _AdminDashboardState extends State<AdminDashboard> {
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.blueGrey,
-                title: Text("Accept New Tasks"),
-                leading: Icon(Icons.arrow_back),
+                title: const Text("All Buyers"),
+                leading: const Icon(Icons.arrow_back),
               ),
               body: ListView(
                 children: documents.map(
                   (doc) {
                     Map data = (doc.data() as Map);
-                    Taskdetail currentTask = Taskdetail.fromMap(data);
+                    BuyerDetails currentTask = BuyerDetails.fromMap(data);
                     // if (data["isAccepted"]) {
-                    if (currentTask.isAccepted == false) {
+                    // ignore: unnecessary_null_comparison
+                    if (currentTask != null) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
                           color: Colors.grey[300],
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => (TaskInfovalid(
-                                          Taskvalidation: currentTask,
-                                        ))),
-                              );
-                            },
+                            onTap: () {},
                             child: ListTile(
-                              title: Text(currentTask.Title.toString()),
-                              trailing: Container(
+                              title: Text(currentTask.First_Name.toString()),
+                              trailing: SizedBox(
                                 width: 70,
                                 child: Row(children: [
                                   Expanded(
@@ -92,7 +74,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         ),
                       );
                     } else {
-                      return SizedBox();
+                      return const SizedBox();
                     }
                   },
                 ).toList(),

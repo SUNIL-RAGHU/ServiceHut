@@ -7,18 +7,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Taskpost extends StatefulWidget {
+class BuyerTaskpost extends StatefulWidget {
   String? Id;
-  Taskpost({
+  BuyerTaskpost({
     Key? key,
     required Id,
   }) : super(key: key);
 
   @override
-  State<Taskpost> createState() => _TaskpostState();
+  State<BuyerTaskpost> createState() => _BuyerTaskpostState();
 }
 
-class _TaskpostState extends State<Taskpost> {
+class _BuyerTaskpostState extends State<BuyerTaskpost> {
   final _TitleController = TextEditingController();
   final _DetailsController = TextEditingController();
 
@@ -46,6 +46,7 @@ class _TaskpostState extends State<Taskpost> {
     String? timeline,
     String? Details,
     String? uid,
+
     // String? longitude,
     // String? Latitude,
   ) async {
@@ -58,6 +59,7 @@ class _TaskpostState extends State<Taskpost> {
       'Details': Details,
       'Uid': uid,
       'isAccepted': false,
+      'BuyerAccepted': false,
       // 'Latitude': Latitude,
       // 'Longitude': longitude,
     });

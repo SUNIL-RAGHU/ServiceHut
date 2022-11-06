@@ -18,7 +18,7 @@ import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:snippet_coder_utils/multi_images_utils.dart';
-import 'package:svlp/Views/profilpage.dart';
+
 import 'package:path/path.dart' as Path;
 
 class RegisterProviderPage extends StatefulWidget {
@@ -140,8 +140,6 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     return workImageUrls;
   }
 
-  final ImagePicker _picker = ImagePicker();
-
   File? Profileimage;
 
   Future<void> selectImage(ImageSource source) async {
@@ -201,6 +199,8 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
 
       final String? uid = credential.user?.uid;
       final String? Roles = "Provider";
+      final bool? isAccepted = false;
+      final bool? BuyerAccepted = false;
 
       addUserDetails(
         _NameController.text.trim(),
@@ -216,6 +216,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         Latitude,
         Longitude,
         Roles,
+        isAccepted,
       );
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
@@ -250,13 +251,14 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
     String SelectedCategory,
     String Email,
     List<String?> Subcategory,
-    List<String?>? pics_of_works,
-    List<String?>? id_proofs,
+    List<String?>? picsOfWorks,
+    List<String?>? idProofs,
     String ProfilePic,
     String? uid,
     String? longitude,
     String? Latitude,
     String? Roles,
+    bool? isAccepted,
   ) async {
     await FirebaseFirestore.instance.collection('User').doc(uid).set({
       'Name': Name,
@@ -265,13 +267,14 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
       'Email': Email,
       'SelectedCategory': SelectedCategory,
       'SubCategory': Subcategory,
-      'WorkdoneImages': pics_of_works,
-      'Id_proofs': id_proofs,
+      'WorkdoneImages': picsOfWorks,
+      'Id_proofs': idProofs,
       'Profile_Pics': ProfilePic,
       'Uid': uid,
       'Latitude': Latitude,
       'Longitude': longitude,
-      'Roles': Roles
+      'Roles': Roles,
+      'isAccepted': isAccepted,
     });
   }
 

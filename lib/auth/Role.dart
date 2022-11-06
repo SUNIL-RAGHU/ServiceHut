@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:svlp/Views/searchbar.dart';
+import 'package:svlp/Buyer/views/BuyerSearch.dart';
 
 import '../Models/UserModel.dart';
-import '../Views/providerdashboard.dart';
+import '../Provider/views/providerdashboard.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({

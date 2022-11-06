@@ -1,31 +1,25 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:svlp/Models/taskdetail.dart';
 
-class TaskInfovalid extends StatefulWidget {
-  Taskdetail Taskvalidation = Taskdetail();
-  TaskInfovalid({super.key, required this.Taskvalidation});
+class ProviderTaskview extends StatefulWidget {
+  Taskdetail DetailsofTask = Taskdetail();
+  ProviderTaskview({super.key, required this.DetailsofTask});
 
   @override
-  State<TaskInfovalid> createState() => _TaskInfovalidState();
+  State<ProviderTaskview> createState() => _ProviderTaskviewState();
 }
 
-class _TaskInfovalidState extends State<TaskInfovalid> {
+class _ProviderTaskviewState extends State<ProviderTaskview> {
   // var user = FirebaseAuth.instance.currentUser;
-  List<String> adj = ["1 day", "2 day"];
 
   // ignore: non_constant_identifier_names
   Taskdetail Ls = Taskdetail();
   @override
   void initState() {
     super.initState();
-    Ls = widget.Taskvalidation;
+    Ls = widget.DetailsofTask;
   }
 
   Future onsubmit() async {
@@ -33,13 +27,11 @@ class _TaskInfovalidState extends State<TaskInfovalid> {
 
     collection
         .doc(Ls.Uid)
-        .update({'isAccepted': true}) // <-- Updated data
+        .update({'BuyerAccepted': true}) // <-- Updated data
         .then((_) => print('Success'))
         .catchError((error) => print('Failed: $error'));
     Navigator.pop(context);
   }
-
-  String? SelectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +57,7 @@ class _TaskInfovalidState extends State<TaskInfovalid> {
               ),
               Text(
                 // "Task Info",
-                Ls.Title.toString(),
+                "Task Assigned",
                 style: GoogleFonts.bebasNeue(
                   fontSize: 52,
                 ),
@@ -181,7 +173,7 @@ class _TaskInfovalidState extends State<TaskInfovalid> {
                       enabled: false,
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Duration" + Ls.timeline.toString()),
+                          hintText: "Duration:" + Ls.timeline.toString()),
                     ),
                   ),
                 ),
@@ -203,7 +195,7 @@ class _TaskInfovalidState extends State<TaskInfovalid> {
                       maxLines: 5,
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Details" + Ls.Details.toString()),
+                          hintText: "Details:" + Ls.Details.toString()),
                     ),
                   ),
                 ),
@@ -212,52 +204,10 @@ class _TaskInfovalidState extends State<TaskInfovalid> {
                 height: 10,
               ),
 
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0),
-                    child: Text(
-                      "Non-premimum Users",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ],
-              ),
               SizedBox(
                 height: 10,
               ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: DropdownButton<String>(
-                      hint: Text('Choose TimePeriod'),
-                      value: SelectedCategory,
-                      isExpanded: true,
-                      items: adj
-                          .map((value) => DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              ))
-                          .toList(),
-                      onChanged: (category) {
-                        setState(() {
-                          SelectedCategory = category!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -269,7 +219,7 @@ class _TaskInfovalidState extends State<TaskInfovalid> {
                         }),
                         child: const Padding(
                           padding: EdgeInsets.all(20.0),
-                          child: Text("Accept"),
+                          child: Text("Interested"),
                         ),
                       )),
                   Padding(

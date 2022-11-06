@@ -8,6 +8,7 @@ class Taskdetail {
   String? Details;
   String? Uid;
   String? Title;
+  bool? BuyerAccepted;
 
 // receiving data
   Taskdetail(
@@ -18,19 +19,20 @@ class Taskdetail {
       this.Title,
       this.isAccepted,
       this.pricerange,
-      this.timeline});
+      this.timeline,
+      this.BuyerAccepted});
 
   factory Taskdetail.fromMap(map) {
     return Taskdetail(
-      Uid: map['Uid'],
-      Details: map['Details'],
-      TaskSelectedCategory: map['TaskSelectedCategory'],
-      TaskselectedSubCategory: map['TaskselectedSubCategory'],
-      Title: map['Title'],
-      isAccepted: map['isAccepted'],
-      pricerange: map['pricerange'],
-      timeline: map['timeline'],
-    );
+        Uid: map['Uid'],
+        Details: map['Details'],
+        TaskSelectedCategory: map['TaskSelectedCategory'],
+        TaskselectedSubCategory: map['TaskselectedSubCategory'],
+        Title: map['Title'],
+        isAccepted: map['isAccepted'],
+        pricerange: map['pricerange'],
+        timeline: map['timeline'],
+        BuyerAccepted: map['BuyerAccepted']);
   }
 // sending data
   Map<String, dynamic> toMap() {
@@ -43,6 +45,7 @@ class Taskdetail {
       'isAccepted': isAccepted,
       'pricerange': pricerange,
       'timeline': timeline,
+      'BuyerAccepted': BuyerAccepted,
     };
   }
 }

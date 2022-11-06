@@ -1,27 +1,23 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_this, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:svlp/Provider/views/providerProfilePage.dart';
 
-import 'package:svlp/Views/profilpage.dart';
-import 'package:svlp/Views/providerdashboard.dart';
-import 'package:svlp/Views/recentproviderdashboard.dart';
-import 'package:svlp/Views/searchbar.dart';
+import 'package:svlp/Provider/views/providerdashboard.dart';
+import 'package:svlp/Provider/views/recentproviderdashboard.dart';
 
-import '../Authorization/SigninBuyer.dart';
-
-class Tabbar extends StatefulWidget {
-  const Tabbar({Key? key}) : super(key: key);
+class ProviderTabbar extends StatefulWidget {
+  const ProviderTabbar({Key? key}) : super(key: key);
 
   @override
-  State<Tabbar> createState() => _TabbarState();
+  State<ProviderTabbar> createState() => _ProviderTabbarState();
 }
 
-class _TabbarState extends State<Tabbar> {
+class _ProviderTabbarState extends State<ProviderTabbar> {
   int selected = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ignore: prefer_const_literals_to_create_immutables
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: selected,
           onTap: (value) => setState(() {
@@ -31,10 +27,8 @@ class _TabbarState extends State<Tabbar> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.home_filled), label: "Home"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search_outlined), label: "Search"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.library_music_outlined),
-                label: "Your Library"),
+                icon: Icon(Icons.search_outlined), label: "Recent"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           ]),
       body: Stack(children: [
         renderview(
@@ -49,7 +43,7 @@ class _TabbarState extends State<Tabbar> {
         ),
         renderview(
           2,
-          ProfilePage(),
+          Providerprofilepage(),
         ),
       ]),
     );

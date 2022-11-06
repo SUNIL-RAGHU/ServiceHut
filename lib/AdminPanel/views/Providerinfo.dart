@@ -1,44 +1,25 @@
-// ignore_for_file: unused_local_variable
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:svlp/AdminPanel/views/ProviderInfovalid.dart';
-import 'package:svlp/AdminPanel/views/TaskInfovalid.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:svlp/Models/ProviderDetails.dart';
 
-import '../../Models/taskdetail.dart';
+import 'ProviderInfovalid.dart';
 
-// ignore: must_be_immutable
-class AdminDashboard extends StatefulWidget {
-  AdminDashboard({
-    super.key,
-  });
+class ProviderInfo extends StatefulWidget {
+  const ProviderInfo({super.key});
+
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  State<ProviderInfo> createState() => _ProviderInfoState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
-  // late Razorpay _razorpay;
-  // ignore: unused_field
-  int _selectedIndex = 0;
-  List<Taskdetail> ds = [];
-  bool isLoaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+class _ProviderInfoState extends State<ProviderInfo> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('Tasks').get(),
+        future: FirebaseFirestore.instance.collection('User').get(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           log("build method called");
           if (snapshot.hasData) {
@@ -46,14 +27,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.blueGrey,
-                title: Text("Accept New Tasks"),
+                title: Text("Accept New Providers"),
                 leading: Icon(Icons.arrow_back),
               ),
               body: ListView(
                 children: documents.map(
                   (doc) {
                     Map data = (doc.data() as Map);
-                    Taskdetail currentTask = Taskdetail.fromMap(data);
+                    Providerdetails currentTask = Providerdetails.fromMap(data);
                     // if (data["isAccepted"]) {
                     if (currentTask.isAccepted == false) {
                       return Padding(
@@ -65,13 +46,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => (TaskInfovalid(
-                                          Taskvalidation: currentTask,
+                                    builder: (context) =>
+                                        (ProviderInfovalidation(
+                                          detailsProvider: currentTask,
                                         ))),
                               );
                             },
                             child: ListTile(
-                              title: Text(currentTask.Title.toString()),
+                              title: Text(currentTask.Name.toString()),
                               trailing: Container(
                                 width: 70,
                                 child: Row(children: [

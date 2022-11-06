@@ -1,29 +1,36 @@
 import 'dart:ffi';
 
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:svlp/Models/ProviderDetails.dart';
 
 class ProviderInfovalidation extends StatefulWidget {
-  const ProviderInfovalidation({super.key});
+  Providerdetails detailsProvider;
+  ProviderInfovalidation({super.key, required this.detailsProvider});
 
   @override
   State<ProviderInfovalidation> createState() => _ProviderInfovalidationState();
 }
 
 class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
-  List<String> _imagelist = [
-    "https://img.icons8.com/external-vitaliy-gorbachev-flat-vitaly-gorbachev/2x/external-cleaning-labour-day-vitaliy-gorbachev-flat-vitaly-gorbachev.png",
-    "https://img.icons8.com/external-wanicon-flat-wanicon/2x/external-multimeter-car-service-wanicon-flat-wanicon.png"
-  ];
-  List<String> _docimagelist = [
-    "https://img.icons8.com/external-vitaliy-gorbachev-flat-vitaly-gorbachev/2x/external-cleaning-labour-day-vitaliy-gorbachev-flat-vitaly-gorbachev.png",
-    "https://img.icons8.com/external-wanicon-flat-wanicon/2x/external-multimeter-car-service-wanicon-flat-wanicon.png",
-    "https://img.icons8.com/external-vitaliy-gorbachev-flat-vitaly-gorbachev/2x/external-cleaning-labour-day-vitaliy-gorbachev-flat-vitaly-gorbachev.png",
-    "https://img.icons8.com/external-wanicon-flat-wanicon/2x/external-multimeter-car-service-wanicon-flat-wanicon.png"
-  ];
+  Providerdetails ProviderDetails = Providerdetails();
+  @override
+  void initState() {
+    super.initState();
+    ProviderDetails = widget.detailsProvider;
+  }
 
-  List<String> ls = ["sunil", "sid"];
+  Future onsubmit() async {
+    var collection = FirebaseFirestore.instance.collection('User');
+
+    collection
+        .doc(ProviderDetails.Uid)
+        .update({'isAccepted': true}) // <-- Updated data
+        .then((_) => print('Success'))
+        .catchError((error) => print('Failed: $error'));
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +53,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
               ClipOval(
                 child: SizedBox.fromSize(
                   child: Image.network(
-                    _imagelist[1],
+                    ProviderDetails.Profilepics!,
                     width: 160,
                     height: 160,
                     fit: BoxFit.cover,
@@ -66,7 +73,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       enabled: false,
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "FirstName:  ${ls.first}",
+                          hintText: "Name:  ${ProviderDetails.Name}",
                           hintStyle: TextStyle(color: Colors.black)),
                     ),
                   ),
@@ -87,7 +94,9 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                     child: TextField(
                       enabled: false,
                       decoration: InputDecoration(
-                          border: InputBorder.none, hintText: "Mobile Number"),
+                          border: InputBorder.none,
+                          hintText:
+                              "Mobile Number:${ProviderDetails.PhoneNumber}"),
                     ),
                   ),
                 ),
@@ -108,7 +117,8 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       enabled: false,
                       maxLines: 5,
                       decoration: InputDecoration(
-                          border: InputBorder.none, hintText: "About"),
+                          border: InputBorder.none,
+                          hintText: "About:${ProviderDetails.About}"),
                     ),
                   ),
                 ),
@@ -129,7 +139,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       enabled: false,
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Category:  ${ls.first}",
+                          hintText: "Category:  ${ProviderDetails.Category}",
                           hintStyle: TextStyle(color: Colors.black)),
                     ),
                   ),
@@ -152,7 +162,9 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       spacing: 2.0,
                       runSpacing: 1.0,
                       children: List.generate(
-                          ls.length, (index) => chip(ls[index], Colors.green)),
+                          ProviderDetails.SubCategory!.length,
+                          (index) => chip(ProviderDetails.SubCategory![index],
+                              Colors.lightBlue)),
                     ),
                   ),
                 ),
@@ -173,7 +185,8 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       enabled: false,
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Location:  ${ls.first}",
+                          hintText:
+                              "Location: Latitude: ${ProviderDetails.Latitude},Longitude:${ProviderDetails.Longitude} ",
                           hintStyle: TextStyle(color: Colors.black)),
                     ),
                   ),
@@ -195,13 +208,13 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                     ),
-                    itemCount: _docimagelist.length,
+                    itemCount: ProviderDetails.WorkdoneImages!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: GridTile(
                             child: Image.network(
-                              (_docimagelist[index]),
+                              (ProviderDetails.WorkdoneImages![index]),
                               height: 100,
                               width: 100,
                             ),
@@ -226,13 +239,13 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                     ),
-                    itemCount: _docimagelist.length,
+                    itemCount: ProviderDetails.Id_proofs!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: GridTile(
                             child: Image.network(
-                              (_docimagelist[index]),
+                              (ProviderDetails.Id_proofs![index]),
                               height: 100,
                               width: 100,
                             ),

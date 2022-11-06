@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:svlp/Views/posttask.dart';
+import 'package:svlp/Buyer/views/posttask.dart';
 
 class Buyerfilter extends StatefulWidget {
   final String? category;
@@ -179,7 +179,7 @@ class _BuyerfilterState extends State<Buyerfilter> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Taskpost(
+                              builder: (context) => BuyerTaskpost(
                                     Id: widget.Id,
                                   )),
                         );
