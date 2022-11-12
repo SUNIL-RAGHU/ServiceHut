@@ -17,6 +17,8 @@ class _AdminTabbarState extends State<AdminTabbar> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
           currentIndex: selected,
           onTap: (value) => setState(() {
                 this.selected = value;

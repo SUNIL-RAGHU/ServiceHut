@@ -37,8 +37,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('Tasks').get(),
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('Tasks').snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           log("build method called");
           if (snapshot.hasData) {
@@ -83,7 +83,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   Expanded(
                                       child: IconButton(
                                     icon: const Icon(Icons.delete),
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await FirebaseFirestore.instance
+                                          .collection('Tasks')
+                                          .doc(currentTask.Uid)
+                                          .delete();
+                                    },
                                   )),
                                 ]),
                               ),

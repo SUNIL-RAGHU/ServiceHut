@@ -18,8 +18,8 @@ class ProviderInfo extends StatefulWidget {
 class _ProviderInfoState extends State<ProviderInfo> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('User').get(),
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('User').snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           log("build method called");
           if (snapshot.hasData) {

@@ -36,8 +36,8 @@ class _RecentProviderdashboardState extends State<RecentProviderdashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('Tasks').get(),
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('Tasks').snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           log("build method called");
           if (snapshot.hasData) {
@@ -64,13 +64,13 @@ class _RecentProviderdashboardState extends State<RecentProviderdashboard> {
                             onTap: () {},
                             child: ListTile(
                               title: Text(currentTask.Title.toString()),
-                              trailing: Icon(Icons.arrow_circle_right),
+                              trailing: const Icon(Icons.arrow_circle_right),
                             ),
                           ),
                         ),
                       );
                     } else {
-                      return SizedBox();
+                      return const SizedBox();
                     }
                   },
                 ).toList(),

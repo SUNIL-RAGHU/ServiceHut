@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:svlp/Models/ProviderDetails.dart';
 
-class ProviderInfovalidation extends StatefulWidget {
+class ProviderProfileview extends StatefulWidget {
   Providerdetails detailsProvider;
-  ProviderInfovalidation({super.key, required this.detailsProvider});
+  ProviderProfileview({super.key, required this.detailsProvider});
 
   @override
-  State<ProviderInfovalidation> createState() => _ProviderInfovalidationState();
+  State<ProviderProfileview> createState() => _ProviderProfileviewState();
 }
 
-class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
+class _ProviderProfileviewState extends State<ProviderProfileview> {
   Providerdetails ProviderDetails = Providerdetails();
   @override
   void initState() {
@@ -21,21 +21,20 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
     ProviderDetails = widget.detailsProvider;
   }
 
-  Future onsubmit() async {
-    var collection = FirebaseFirestore.instance.collection('User');
-
-    collection
-        .doc(ProviderDetails.Uid)
-        .update({'isAccepted': true}) // <-- Updated data
-        .then((_) => print('Success'))
-        .catchError((error) => print('Failed: $error'));
-    Navigator.pop(context);
-  }
+  Future onsubmit() async {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+          backgroundColor: Colors.blueGrey,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -59,6 +58,9 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                     fit: BoxFit.cover,
                   ),
                 ),
+              ),
+              SizedBox(
+                height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -147,7 +149,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -158,7 +160,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                       border: Border.all(color: Colors.white),
                       borderRadius: BorderRadius.circular(12)),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Wrap(
                       spacing: 2.0,
                       runSpacing: 1.0,
@@ -171,7 +173,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -269,7 +271,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                         }),
                         child: const Padding(
                           padding: EdgeInsets.all(20.0),
-                          child: Text("Accept"),
+                          child: Text("Edit"),
                         ),
                       )),
                   Padding(
@@ -278,7 +280,7 @@ class _ProviderInfovalidationState extends State<ProviderInfovalidation> {
                         onPressed: (() {}),
                         child: const Padding(
                           padding: EdgeInsets.all(20.0),
-                          child: Text("Reject"),
+                          child: Text("Delete"),
                         ),
                       )),
                 ],

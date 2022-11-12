@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:svlp/Buyer/views/BuyerSearch.dart';
+import 'package:svlp/navigations/Providertabbar.dart';
 
 import '../Models/UserModel.dart';
 import '../Provider/views/providerdashboard.dart';
@@ -41,13 +42,15 @@ class _ControlScreenState extends State<ControlScreen> {
         if (snapshot.hasData) {
           loggedInUser = UserModel.fromMap(snapshot.data);
 
+          // print(loggedInUser.SelectedCategory);
+
           if (loggedInUser.Roles == 'Buyer') {
             return Search(
               id: loggedInUser.Uid,
             );
           } else {
-            return Providerdashboard(
-              id: loggedInUser.Uid!,
+            return ProviderTabbar(
+              user: loggedInUser,
             );
           }
         }

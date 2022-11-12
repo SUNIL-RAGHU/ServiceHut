@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:svlp/AdminPanel/views/ProviderProfileview.dart';
 
 import '../../Models/ProviderDetails.dart';
 
@@ -49,7 +50,15 @@ class _AllProviderInfoState extends State<AllProviderInfo> {
                         child: Card(
                           color: Colors.grey[300],
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProviderProfileview(
+                                          detailsProvider: currentTask,
+                                        )),
+                              );
+                            },
                             child: ListTile(
                               title: Text(currentTask.Name.toString()),
                               trailing: SizedBox(

@@ -1,13 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_this, non_constant_identifier_names
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:svlp/Models/UserModel.dart';
 import 'package:svlp/Provider/views/providerProfilePage.dart';
 
 import 'package:svlp/Provider/views/providerdashboard.dart';
 import 'package:svlp/Provider/views/recentproviderdashboard.dart';
 
 class ProviderTabbar extends StatefulWidget {
-  const ProviderTabbar({Key? key}) : super(key: key);
+  UserModel user;
+  ProviderTabbar({Key? key, required this.user}) : super(key: key);
 
   @override
   State<ProviderTabbar> createState() => _ProviderTabbarState();
@@ -34,7 +37,7 @@ class _ProviderTabbarState extends State<ProviderTabbar> {
         renderview(
           0,
           Providerdashboard(
-            id: '',
+            user: widget.user,
           ),
         ),
         renderview(
@@ -43,7 +46,9 @@ class _ProviderTabbarState extends State<ProviderTabbar> {
         ),
         renderview(
           2,
-          Providerprofilepage(),
+          Providerprofilepage(
+            Uid: widget.user.Uid.toString(),
+          ),
         ),
       ]),
     );

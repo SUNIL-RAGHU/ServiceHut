@@ -24,7 +24,8 @@ class _BuyerTaskpostState extends State<BuyerTaskpost> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _TitleController.dispose();
+    _DetailsController.dispose();
   }
 
   var items = [
@@ -84,7 +85,7 @@ class _BuyerTaskpostState extends State<BuyerTaskpost> {
 
   Future Submit() async {
     log("on submit called");
-    addTaskDetails(
+    await addTaskDetails(
       _TitleController.text.trim(),
       TaskselectedCategory,
       TaskselectedSubCategory,
@@ -93,6 +94,9 @@ class _BuyerTaskpostState extends State<BuyerTaskpost> {
       _DetailsController.text.trim(),
       FirebaseAuth.instance.currentUser!.uid,
     );
+
+    Navigator.pop(context);
+    Navigator.pop(context);
 
     // ignore: use_build_context_synchronously
   }

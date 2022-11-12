@@ -6,16 +6,28 @@ import 'package:flutter/material.dart';
 import 'package:svlp/Models/ProviderDetails.dart';
 
 class Providerprofilepage extends StatefulWidget {
-  const Providerprofilepage({super.key});
+  String Uid;
+
+  Providerprofilepage({
+    super.key,
+    required this.Uid,
+  });
 
   @override
   State<Providerprofilepage> createState() => _ProviderprofilepageState();
 }
 
 class _ProviderprofilepageState extends State<Providerprofilepage> {
-  Providerdetails ds = Providerdetails();
+  var ds = Providerdetails();
   // ignore: non_constant_identifier_names
-  final String Uid = "FSQ1raPY9RTnFloJHacMpyvwtHo1";
+  String? Uid;
+
+  @override
+  void initState() {
+    super.initState();
+    Uid = widget.Uid;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -35,7 +47,18 @@ class _ProviderprofilepageState extends State<Providerprofilepage> {
               body: ListView(children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
-                  child: Center(child: buildImage()),
+                  child: Center(
+                    child: ClipOval(
+                      child: SizedBox.fromSize(
+                        child: Image.network(
+                          ds.Profilepics.toString(),
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 Padding(
@@ -67,7 +90,7 @@ class _ProviderprofilepageState extends State<Providerprofilepage> {
                         ],
                       ),
                       Text(
-                        ds.Category!,
+                        ds.SelectedCategory!,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 24),
                       ),
@@ -138,15 +161,13 @@ class _ProviderprofilepageState extends State<Providerprofilepage> {
     );
   }
 
-  Widget buildImage() {
-    final image = NetworkImage(ds.WorkdoneImages.toString());
-
+  Widget buildImage(String image) {
     return ClipOval(
       child: Material(
-        color: Colors.transparent,
+        color: Colors.black,
         child: Ink.image(
-          image: image,
-          fit: BoxFit.cover,
+          image: NetworkImage(image),
+          fit: BoxFit.fill,
           width: 128,
           height: 128,
         ),

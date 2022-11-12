@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:svlp/AdminPanel/views/BuyerProfileviews.dart';
 
 import '../../Models/BuyerDetails.dart';
 import '../../Models/ProviderDetails.dart';
@@ -26,8 +27,8 @@ class _AllBuyerInfoInfoState extends State<AllBuyerInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('User').get(),
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('User').snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           log("build method called");
           if (snapshot.hasData) {
@@ -45,13 +46,21 @@ class _AllBuyerInfoInfoState extends State<AllBuyerInfo> {
                     BuyerDetails currentTask = BuyerDetails.fromMap(data);
                     // if (data["isAccepted"]) {
                     // ignore: unnecessary_null_comparison
-                    if (currentTask != null) {
+                    if (currentTask.First_Name != null) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
                           color: Colors.grey[300],
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BuyerProfileview(
+                                          detailsbuyer: currentTask,
+                                        )),
+                              );
+                            },
                             child: ListTile(
                               title: Text(currentTask.First_Name.toString()),
                               trailing: SizedBox(

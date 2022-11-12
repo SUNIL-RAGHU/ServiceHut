@@ -34,26 +34,18 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   Position? _currentPosition;
   String? Latitude;
+  // ignore: non_constant_identifier_names
   String? Longitude;
   String? _currentAddress;
 
   TextEditingController editingController = TextEditingController();
 
-  final duplicateItems = [
-    'General Carpentry Work',
-    'Repair Work',
-    'Assembly & Installation',
-    'Door & Window Install',
-    'sofa and other units repair'
-  ];
-
   // ignore: non_constant_identifier_names
   Map<String, String> BuyerDashboardImage = {
-    "Carpenter": "https://unsplash.com/photos/IvzvlKQwjk8",
-    "Ac Repair Services":
-        "https://www.freepik.com/free-photo/hvac-technician-working-capacitor-part-condensing-unit-male-worker-repairman-uniform-repairing-adjusting-conditioning-system-diagnosing-looking-technical-issues_10444780.htm#query=air%20conditioner%20repair&position=9&from_view=keyword",
-    "Painting":
-        "https://www.freepik.com/free-photo/portrait-repairer-woman-with-painting-roller-isolated_4410817.htm#query=PAINTER&position=0&from_view=search&track=sph",
+    "Carpenter":
+        "https://images.pexels.com/photos/5974296/pexels-photo-5974296.jpeg?cs=srgb&dl=pexels-ono-kosuki-5974296.jpg&fm=jpg&_gl=1*1odpn72*_ga*MjA5NTM5NjI1MC4xNjY3ODgzNjkx*_ga_8JE65Q40S6*MTY2Nzg4MzcyOC4xLjEuMTY2Nzg4Mzg0NS4wLjAuMA",
+    "Ac Repair Services": "",
+    "Painting": "",
     "Pest Control Services": "https://unsplash.com/photos/wz3ijPHvL54",
     "Housekeeping services": "https://unsplash.com/photos/jjrXvzbqC5E",
     "Welding/fabricator": "https://unsplash.com/photos/d0AcxMk33is",
@@ -64,7 +56,7 @@ class _SearchState extends State<Search> {
     "Electrician":
         "https://www.freepik.com/free-photo/male-electrician-works-switchboard-with-electrical-connecting-cable_19589484.htm#query=Electrician&position=5&from_view=search&track=sph",
     "Beauty & Makeup":
-        "https://www.freepik.com/free-photo/beautician-with-brush-applies-white-moisturizing-mask-face-young-girl-client-spa-beauty-salon_13340680.htm#query=beauty&position=2&from_view=search&track=sph",
+        "https://img.freepik.com/free-photo/beautician-with-brush-applies-white-moisturizing-mask-face-young-girl-client-spa-beauty-salon_343596-4247.jpg?w=1800&t=st=1667727701~exp=1667728301~hmac=f416131202a53e1727e3cba7895b239de89b5aa8c09cca3861b7543c9c558178",
     "Civil Works/Interior decorator":
         "https://www.freepik.com/free-photo/civil-engineer-construction-architecture-worker-are-working-construction-site-with-tablet-blueprints-planing-about-new-construction-sitecooperation-teamwork-concept_26205218.htm#query=civil%20workers&position=1&from_view=search&track=sph",
     "Scrap Collection":
@@ -92,27 +84,31 @@ class _SearchState extends State<Search> {
     "Appliances repair ":
         "https://www.freepik.com/free-photo/service-man-adjusting-house-heating-system_13377134.htm#query=Appliances%20repair&position=4&from_view=search&track=sph",
     "Cook/Chef/Aayah":
-        "https://www.freepik.com/free-photo/woman-chef-cooking-vegetables-pan_8380324.htm#query=Cook&position=0&from_view=search&track=sph"
+        "https://www.freepik.com/free-photo/woman-chef-cooking-vegetables-pan_8380324.htm#query=Cook&position=0&from_view=search&track=sph",
+    "Not found":
+        "https://res.cloudinary.com/practicaldev/image/fetch/s--vKtmuHUH--/c_imagga_scale,f_auto,fl_progressive,h_720,q_auto,w_1280/https://dev-to-uploads.s3.amazonaws.com/i/7aqcppklh6bexoa70320.jpg"
   };
-  var items = [];
+  List<String> items = [];
 
   @override
   void initState() {
-    items.addAll(duplicateItems);
+    items.addAll(BuyerDashboardImage.keys);
     // final id = id;
     super.initState();
   }
 
   void filterSearchResults(String query) {
+    query = query.toLowerCase();
     List<String> dummySearchList = [];
     dummySearchList.addAll(BuyerDashboardImage.keys);
     if (query.isNotEmpty) {
       List<String> dummyListData = [];
-      dummySearchList.forEach((item) {
-        if (item.contains(query)) {
+      for (String item in dummySearchList) {
+        String check = item.toLowerCase();
+        if (check.contains(query)) {
           dummyListData.add(item);
         }
-      });
+      }
       setState(() {
         items.clear();
         items.addAll(dummyListData);
@@ -121,7 +117,7 @@ class _SearchState extends State<Search> {
     } else {
       setState(() {
         items.clear();
-        items.addAll(duplicateItems);
+        items.addAll(dummySearchList);
       });
     }
   }
@@ -131,26 +127,31 @@ class _SearchState extends State<Search> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: Text(
-          'Sign out',
-          style: TextStyle(fontSize: 16),
-        ),
-        actions: [
-          GestureDetector(
-              onTap: (() async {
+          centerTitle: true,
+          title: const Text(
+            'Home',
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton.icon(
+              label: const Text(
+                "Sign out",
+                style: TextStyle(color: Colors.white),
+              ),
+              icon: const Icon(Icons.logout, color: Colors.white),
+              onPressed: () async {
                 try {
                   await FirebaseAuth.instance.signOut();
                 } catch (e) {
                   log(e.toString());
                 }
-              }),
-              child: Icon(Icons.logout)),
-        ],
-      ),
+              },
+            )
+          ]),
       body: Stack(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 15,
             ),
@@ -174,17 +175,16 @@ class _SearchState extends State<Search> {
                 Expanded(
                   child: GridView.builder(
                       shrinkWrap: true,
-                      physics: ScrollPhysics(),
+                      physics: const ScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 200,
                               childAspectRatio: 3 / 2,
                               crossAxisSpacing: 20,
                               mainAxisSpacing: 20),
-                      itemCount: BuyerDashboardImage.length,
+                      itemCount: items.length,
                       itemBuilder: (BuildContext ctx, index) {
-                        String? key = BuyerDashboardImage.keys.elementAt(index);
-
+                        String key = items[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -203,7 +203,8 @@ class _SearchState extends State<Search> {
                               color: Colors.amber,
                               borderRadius: BorderRadius.circular(15),
                               image: DecorationImage(
-                                image: NetworkImage(BuyerDashboardImage[key]!),
+                                image: NetworkImage(BuyerDashboardImage[key] ??
+                                    BuyerDashboardImage["Not found"]!),
                               ),
                             ),
                             //      adj.keys
