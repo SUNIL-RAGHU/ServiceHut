@@ -52,7 +52,7 @@ class _ProviderProfileviewState extends State<ProviderProfileview> {
               ClipOval(
                 child: SizedBox.fromSize(
                   child: Image.network(
-                    ProviderDetails.Profilepics!,
+                    ProviderDetails.Profile_Pics!,
                     width: 160,
                     height: 160,
                     fit: BoxFit.cover,

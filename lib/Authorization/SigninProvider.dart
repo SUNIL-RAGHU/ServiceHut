@@ -202,7 +202,7 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
       final bool? isAccepted = false;
       final bool? BuyerAccepted = false;
 
-      addUserDetails(
+      var a = addUserDetails(
         _NameController.text.trim(),
         _AboutController.text.trim(),
         int.parse(_PhoneNumberController.text.trim()),
@@ -218,6 +218,16 @@ class _RegisterProviderPage extends State<RegisterProviderPage> {
         Roles,
         isAccepted,
       );
+      // ignore: unrelated_type_equality_checks
+      if (a == false)
+        // ignore: curly_braces_in_flow_control_structures
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text("Please Fill All Fields"),
+              );
+            });
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     }

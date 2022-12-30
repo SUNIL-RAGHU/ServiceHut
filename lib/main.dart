@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'Buyer/views/new.dart';
 import 'auth/main_page.dart';
 
 void main() async {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
     // ignore: prefer_const_constructors
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainPage(),
+      home: HomePages(),
     );
   }
 }

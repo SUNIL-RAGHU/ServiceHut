@@ -49,13 +49,11 @@ class _ProviderprofilepageState extends State<Providerprofilepage> {
                   padding: const EdgeInsets.only(top: 20),
                   child: Center(
                     child: ClipOval(
-                      child: SizedBox.fromSize(
-                        child: Image.network(
-                          ds.Profilepics.toString(),
-                          width: 160,
-                          height: 160,
-                          fit: BoxFit.cover,
-                        ),
+                      child: Image.network(
+                        ds.Profile_Pics.toString(),
+                        width: 160,
+                        height: 160,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

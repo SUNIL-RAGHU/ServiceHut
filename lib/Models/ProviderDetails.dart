@@ -10,7 +10,7 @@ class Providerdetails {
   final String? Email;
   final String? Name;
   final int? PhoneNumber;
-  final String? Profilepics;
+  final String? Profile_Pics;
   late final String? SelectedCategory;
   final List<dynamic>? SubCategory;
   final List<dynamic>? WorkdoneImages;
@@ -24,7 +24,7 @@ class Providerdetails {
     this.Email,
     this.Name,
     this.PhoneNumber,
-    this.Profilepics,
+    this.Profile_Pics,
     this.SelectedCategory,
     this.SubCategory,
     this.WorkdoneImages,
@@ -40,7 +40,7 @@ class Providerdetails {
     String? Email,
     String? Name,
     int? PhoneNumber,
-    String? Profilepics,
+    String? Profile_Pics,
     String? SelectedCategory,
     List<dynamic>? SubCategory,
     List<dynamic>? WorkdoneImages,
@@ -55,7 +55,7 @@ class Providerdetails {
       Email: Email ?? this.Email,
       Name: Name ?? this.Name,
       PhoneNumber: PhoneNumber ?? this.PhoneNumber,
-      Profilepics: Profilepics ?? this.Profilepics,
+      Profile_Pics: Profile_Pics ?? this.Profile_Pics,
       SelectedCategory: SelectedCategory ?? this.SelectedCategory,
       SubCategory: SubCategory ?? this.SubCategory,
       WorkdoneImages: WorkdoneImages ?? this.WorkdoneImages,
@@ -73,7 +73,7 @@ class Providerdetails {
       'Email': Email,
       'Name': Name,
       'PhoneNumber': PhoneNumber,
-      'Profilepics': Profilepics,
+      'Profile_Pics': Profile_Pics,
       'SelectedCategory': SelectedCategory,
       'SubCategory': SubCategory,
       'WorkdoneImages': WorkdoneImages,
@@ -93,8 +93,8 @@ class Providerdetails {
       Name: map['Name'] != null ? map['Name'] as String : null,
       PhoneNumber:
           map['PhoneNumber'] != null ? map['PhoneNumber'] as int : null,
-      Profilepics:
-          map['Profilepics'] != null ? map['Profilepics'] as String : null,
+      Profile_Pics:
+          map['Profile_Pics'] != null ? map['Profile_Pics'] as String : null,
       SelectedCategory: map['SelectedCategory'] != null
           ? map['SelectedCategory'] as String
           : null,
@@ -121,7 +121,7 @@ class Providerdetails {
 
   @override
   String toString() {
-    return 'Providerdetails(About: $About, Email: $Email, Name: $Name, PhoneNumber: $PhoneNumber, Profilepics: $Profilepics, Category: $Category, SubCategory: $SubCategory, WorkdoneImages: $WorkdoneImages, Id_proofs: $Id_proofs, Latitude: $Latitude, Longitude: $Longitude, isAccepted: $isAccepted, Uid: $Uid)';
+    return 'Providerdetails(About: $About, Email: $Email, Name: $Name, PhoneNumber: $PhoneNumber, Profile_Pics: $Profile_Pics, Category: $Category, SubCategory: $SubCategory, WorkdoneImages: $WorkdoneImages, Id_proofs: $Id_proofs, Latitude: $Latitude, Longitude: $Longitude, isAccepted: $isAccepted, Uid: $Uid)';
   }
 
   @override
@@ -132,7 +132,7 @@ class Providerdetails {
         other.Email == Email &&
         other.Name == Name &&
         other.PhoneNumber == PhoneNumber &&
-        other.Profilepics == Profilepics &&
+        other.Profile_Pics == Profile_Pics &&
         other.SelectedCategory == SelectedCategory &&
         listEquals(other.SubCategory, SubCategory) &&
         listEquals(other.WorkdoneImages, WorkdoneImages) &&
@@ -149,7 +149,7 @@ class Providerdetails {
         Email.hashCode ^
         Name.hashCode ^
         PhoneNumber.hashCode ^
-        Profilepics.hashCode ^
+        Profile_Pics.hashCode ^
         SelectedCategory.hashCode ^
         SubCategory.hashCode ^
         WorkdoneImages.hashCode ^
@@ -169,7 +169,7 @@ class Providerdetails {
 //     this.Email,
 //     this.Name,
 //     this.PhoneNumber,
-//     this.Profilepics,
+//     this.Profile_Pics,
 //     this.SubCategory,
 //     this.WorkdoneImages,
 //     this.Id_proofs,
@@ -185,7 +185,7 @@ class Providerdetails {
 //       Email: map['Email'],
 //       Name: map['Name'],
 //       PhoneNumber: map['PhoneNumber'],
-//       Profilepics: map['Profile_Pics'],
+//       Profile_Pics: map['Profile_Pics'],
 //       Category: map['SelectedCategory'],
 //       SubCategory: map['SubCategory'],
 //       WorkdoneImages: map['WorkdoneImages'],
@@ -203,7 +203,7 @@ class Providerdetails {
 //       'Email': Email,
 //       'Name': Name,
 //       'PhoneNumber': PhoneNumber,
-//       'Profile_Pics': Profilepics,
+//       'Profile_Pics': Profile_Pics,
 //       'SelectedCategory': Category,
 //       'SubCategory': SubCategory,
 //       'WorkdoneImages': WorkdoneImages,

@@ -45,8 +45,7 @@ class _RecentProviderdashboardState extends State<RecentProviderdashboard> {
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.blueGrey,
-                title: const Text("Accept New Tasks"),
-                leading: const Icon(Icons.arrow_back),
+                title: const Text("Recent Tasks"),
               ),
               body: ListView(
                 children: documents.map(
