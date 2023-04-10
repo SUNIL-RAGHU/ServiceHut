@@ -1,8 +1,6 @@
 # ServiceHut App
 
 
-This project is a starting point for a Flutter application.
-
 Problem statement:
         Whenever you move into a new household, it can be hard to find professionals to work on your household needs or some other service that has to be done at your home. Say you need a proficient electrician to repair a broken light socket. Unless you are familiar with your neighborhood, it would be hard to find an electrician to fix it.
 
